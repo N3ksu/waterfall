@@ -19,7 +19,7 @@ public class FrontServlet extends HttpServlet {
     public void init() throws ServletException {
         contextDefaultDispatcher = getServletContext().getNamedDispatcher("default");
         if (contextDefaultDispatcher == null)
-            throw new ServletException("The default dispatcher cannot be found");
+            throw new ServletException("The context's default dispatcher cannot be found");
     }
 
     @Override
