@@ -10,58 +10,37 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
 
 @WebServlet("/")
 public class FrontServlet extends HttpServlet {
-    private RequestDispatcher defaultDispatcher;
+    private RequestDispatcher contextDefaultDispatcher;
 
     @Override
-    public void init() {
-        defaultDispatcher = findDefaultDispatcher()
-                .orElseThrow(() -> new RuntimeException("The default dispatcher cannot be found"));
-    }
-
-    private Optional<RequestDispatcher> findDefaultDispatcher() {
-        return Optional.ofNullable(getServletContext().getNamedDispatcher("default"));
+    public void init() throws ServletException {
+        contextDefaultDispatcher = getServletContext().getNamedDispatcher("default");
+        if (contextDefaultDispatcher == null)
+            throw new ServletException("The default dispatcher cannot be found");
     }
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String resourcePath = getResourcePath(request);
-        Optional<URL> optionalURL = findResource(resourcePath);
+        String relativePath = getContextRelativePath(request);
 
-        if (optionalURL.isPresent()) {
-            delegateToDefaultDispatcher(request, response);
-        } else {
-            handle(resourcePath, response);
+        if (getServletContext().getResource(relativePath) != null) contextDefaultDispatcher.forward(request, response);
+        else {
+            response.setContentType("text/plain;charset=UTF-8");
+            try (PrintWriter printWriter = response.getWriter()) {
+                printWriter.print(relativePath);
+            }
         }
     }
 
-    private void handle(String resourcePath, HttpServletResponse response) throws IOException {
-        response.setContentType("text/plain;charset=UTF-8");
-
-        try (PrintWriter out = response.getWriter()) {
-            out.print(resourcePath);
-        }
-    }
-
-    private void delegateToDefaultDispatcher(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        defaultDispatcher.forward(request, response);
-    }
-
-    private Optional<URL> findResource(String resourcePath) throws MalformedURLException {
-        return Optional.ofNullable(getServletContext().getResource(resourcePath));
-    }
-
-    private String getResourcePath(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String contextPath = request.getContextPath();
-        String resourcePath = requestURI.substring(contextPath.length());
-
-        return resourcePath.isEmpty() ? "/" : resourcePath;
+    private String getContextRelativePath(HttpServletRequest request) {
+        String servletPath = request.getServletPath(); // "" for "/"
+        String uncheckedPathInfo = request.getPathInfo(); // null for "/"
+        String pathInfo = uncheckedPathInfo == null ? "" : uncheckedPathInfo;
+        String relativePath = servletPath + pathInfo;
+        return relativePath.isEmpty() ? "/" : relativePath;
     }
 }
