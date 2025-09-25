@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 
 @WebServlet("/")
 public class FrontServlet extends HttpServlet {
@@ -38,8 +39,7 @@ public class FrontServlet extends HttpServlet {
     // TODO security concerns around path traversal with request containing ".." or/and "//"
     private String getContextRelativePath(HttpServletRequest request) {
         String servletPath = request.getServletPath(); // "" for "/"
-        String uncheckedPathInfo = request.getPathInfo(); // null for "/"
-        String pathInfo = uncheckedPathInfo == null ? "" : uncheckedPathInfo;
+        String pathInfo = Optional.ofNullable(request.getPathInfo()).orElse(""); // null for "/"
         String relativePath = servletPath + pathInfo;
         return relativePath.isEmpty() ? "/" : relativePath;
     }
