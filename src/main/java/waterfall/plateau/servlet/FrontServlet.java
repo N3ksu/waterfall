@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 
 @WebServlet("/")
 public class FrontServlet extends HttpServlet {
@@ -36,6 +35,7 @@ public class FrontServlet extends HttpServlet {
         }
     }
 
+    // TODO security concerns around path traversal with request containing ".." or/and "//"
     private String getContextRelativePath(HttpServletRequest request) {
         String servletPath = request.getServletPath(); // "" for "/"
         String uncheckedPathInfo = request.getPathInfo(); // null for "/"
