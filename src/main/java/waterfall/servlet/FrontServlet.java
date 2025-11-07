@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import waterfall.annotation.Controller;
 import waterfall.annotation.Url;
 import waterfall.util.ReflectionUtil;
+import waterfall.view.ModelView;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -82,9 +83,16 @@ public class FrontServlet extends HttpServlet {
                     Constructor<?> controllerConstructor = methodClass.getDeclaredConstructor();
                     Object controller = controllerConstructor.newInstance();
 
-                    if (returnType.equals(String.class)) {
-                        printWriter.print("200 (String.class):" + method.invoke(controller).toString());
+                    if (returnType.equals(ModelView.class)) {
+                        ModelView modelView = (ModelView) method.invoke(controller);
+                        String view = modelView.getView();
+                        RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
+                        requestDispatcher.forward(request, response);
+                    } else if (returnType.equals(String.class)) {
+                        String returnedString = (String) method.invoke(controller);
+                        printWriter.print("200 return String: " + returnedString);
                     } else {
+                        printWriter.print("200 Method.invoke: " + method.getName());
                         method.invoke(controller);
                     }
                 }
