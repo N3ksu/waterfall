@@ -1,4 +1,4 @@
-package waterfall.plateau.filter;
+package waterfall.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
