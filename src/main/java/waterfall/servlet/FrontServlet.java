@@ -1,4 +1,4 @@
-package waterfall.plateau.servlet;
+package waterfall.servlet;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -7,9 +7,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.plateau.annotation.Controller;
-import waterfall.plateau.annotation.Url;
-import waterfall.plateau.util.WaterfallUtil;
+import waterfall.annotation.Controller;
+import waterfall.annotation.Url;
+import waterfall.util.ReflectionUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,14 +22,14 @@ import java.util.Set;
 public class FrontServlet extends HttpServlet {
     private ServletContext servletContext;
     private RequestDispatcher contextDefaultDispatcher;
-    private Map<String, Method> urlWithMethods;
+    private Map<String, Method> urlsWithMethods;
 
     @Override
     public void init()
             throws ServletException {
         try {
             loadContextDefaultDispatcher();
-            loadUrlWithMethods();
+            loadUrlsWithMethods();
         } catch (IOException | URISyntaxException | ClassNotFoundException e) {
             throw new ServletException(e);
         }
@@ -43,15 +43,15 @@ public class FrontServlet extends HttpServlet {
             throw new RuntimeException("The context's default dispatcher cannot be found");
     }
 
-    private void loadUrlWithMethods()
+    private void loadUrlsWithMethods()
             throws IOException, URISyntaxException, ClassNotFoundException {
         String controllersBasePackage = getInitParameter("controllers-base-package");
-        Set<Method> methods = WaterfallUtil.findAnnotatedMethodsInAnnotatedClasses(controllersBasePackage, Url.class, Controller.class);
-        urlWithMethods = new HashMap<>();
+        Set<Method> methods = ReflectionUtil.findAnnotatedMethodsInAnnotatedClasses(controllersBasePackage, Url.class, Controller.class);
+        urlsWithMethods = new HashMap<>();
 
         for (Method method : methods) {
             Url url = method.getAnnotation(Url.class);
-            urlWithMethods.put(url.url(), method);
+            urlsWithMethods.put(url.url(), method);
         }
     }
 
@@ -66,8 +66,8 @@ public class FrontServlet extends HttpServlet {
         else {
             response.setContentType("text/plain;charset=UTF-8");
             try (PrintWriter printWriter = response.getWriter()) {
-                if (urlWithMethods.containsKey(servletPath))
-                    printWriter.print("200 OK: " + servletPath + " " + urlWithMethods.get(servletPath).getName());
+                if (urlsWithMethods.containsKey(servletPath))
+                    printWriter.print("200 OK: " + servletPath + " " + urlsWithMethods.get(servletPath).getName());
                 else
                     printWriter.print("404 Not Found: " + servletPath);
             }

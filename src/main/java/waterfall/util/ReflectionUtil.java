@@ -1,4 +1,4 @@
-package waterfall.plateau.util;
+package waterfall.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class WaterfallUtil {
+public class ReflectionUtil {
     public static Set<Class<?>> findAnnotatedClasses(String packageName, Class<? extends Annotation> annotationClass)
             throws IOException, URISyntaxException, ClassNotFoundException {
         String path = packageName.replace(".", "/");
