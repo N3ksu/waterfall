@@ -53,6 +53,9 @@ public class FrontServlet extends HttpServlet {
             Url url = method.getAnnotation(Url.class);
             urlsWithMethods.put(url.url(), method);
         }
+        
+        ServletContext servletContext = getServletContext();
+        servletContext.setAttribute("urlsWithMethods", urlsWithMethods);
     }
 
     @Override
