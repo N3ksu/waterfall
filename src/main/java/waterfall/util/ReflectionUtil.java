@@ -50,7 +50,14 @@ public class ReflectionUtil {
     public static Set<Method> findAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         Set<Method> methods = new HashSet<>();
 
-        for(Method method : clazz.getMethods())
+        /*
+            java.lang.Class<T> getDeclaredMethods()
+                Returns an array containing Method objects reflecting all the declared methods of the class
+                or interface represented by this Class object,
+                including public, protected, default (package) access, and private methods,
+                but excluding inherited methods.
+        */
+        for(Method method : clazz.getDeclaredMethods())
             if(method.isAnnotationPresent(annotationClass))
                 methods.add(method);
 

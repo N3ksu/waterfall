@@ -13,6 +13,8 @@ import waterfall.util.ReflectionUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -68,11 +70,28 @@ public class FrontServlet extends HttpServlet {
 
         else {
             response.setContentType("text/plain;charset=UTF-8");
+
             try (PrintWriter printWriter = response.getWriter()) {
-                if (urlsWithMethods.containsKey(servletPath))
-                    printWriter.print("200 OK: " + servletPath + " " + urlsWithMethods.get(servletPath).getName());
-                else
-                    printWriter.print("404 Not Found: " + servletPath);
+                if (urlsWithMethods.containsKey(servletPath)) {
+                    Method method = urlsWithMethods.get(servletPath);
+
+                    Class<?> returnType = method.getReturnType();
+                    Class<?> methodClass = method.getDeclaringClass();
+
+                    // The constructor should be public
+                    Constructor<?> controllerConstructor = methodClass.getDeclaredConstructor();
+                    Object controller = controllerConstructor.newInstance();
+
+                    if (returnType.equals(String.class)) {
+                        printWriter.write(method.invoke(controller).toString());
+                    } else {
+                        method.invoke(controller);
+                    }
+                }
+                else printWriter.print("404 Not Found: " + servletPath);
+            } catch (NoSuchMethodException | InstantiationException |
+                     IllegalAccessException | InvocationTargetException e) {
+
             }
         }
     }
