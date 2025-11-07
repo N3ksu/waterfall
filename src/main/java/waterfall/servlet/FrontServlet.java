@@ -83,15 +83,14 @@ public class FrontServlet extends HttpServlet {
                     Object controller = controllerConstructor.newInstance();
 
                     if (returnType.equals(String.class)) {
-                        printWriter.write(method.invoke(controller).toString());
+                        printWriter.print("200 (String.class):" + method.invoke(controller).toString());
                     } else {
                         method.invoke(controller);
                     }
                 }
-                else printWriter.print("404 Not Found: " + servletPath);
-            } catch (NoSuchMethodException | InstantiationException |
-                     IllegalAccessException | InvocationTargetException e) {
-
+                else printWriter.print("404: " + servletPath);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new ServletException(e);
             }
         }
     }
