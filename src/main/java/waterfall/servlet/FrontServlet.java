@@ -3,106 +3,46 @@ package waterfall.servlet;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.annotation.Controller;
-import waterfall.annotation.Url;
-import waterfall.util.ReflectionUtil;
-import waterfall.view.ModelView;
+import waterfall.constant.WFConst;
+import waterfall.net.handler.ServletHandler;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
+@WebServlet("/")
 public class FrontServlet extends HttpServlet {
-    private ServletContext servletContext;
-    private RequestDispatcher contextDefaultDispatcher;
-    private Map<String, Method> urlsWithMethods;
+    private ServletContext ctx;
+    private RequestDispatcher ctxDefaultDispatcher;
+    private ServletHandler handler;
 
     @Override
     public void init()
             throws ServletException {
-        try {
-            loadContextDefaultDispatcher();
-            loadUrlsWithMethods();
-        } catch (IOException | URISyntaxException | ClassNotFoundException e) {
-            throw new ServletException(e);
-        }
+        handler = ServletHandler.IMPL;
+        loadContextDefaultDispatcher();
     }
 
     private void loadContextDefaultDispatcher() {
-        servletContext = getServletContext();
-        contextDefaultDispatcher = servletContext.getNamedDispatcher("default");
+        ctx = getServletContext();
+        ctxDefaultDispatcher = ctx.getNamedDispatcher(WFConst.CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
-        if (contextDefaultDispatcher == null)
+        if (ctxDefaultDispatcher == null)
             throw new RuntimeException("The context's default dispatcher cannot be found");
-    }
-
-    private void loadUrlsWithMethods()
-            throws IOException, URISyntaxException, ClassNotFoundException {
-        String controllersBasePackage = getInitParameter("controllers-base-package");
-        Set<Method> methods = ReflectionUtil.findAnnotatedMethodsInAnnotatedClasses(controllersBasePackage, Url.class, Controller.class);
-        urlsWithMethods = new HashMap<>();
-
-        for (Method method : methods) {
-            Url url = method.getAnnotation(Url.class);
-            urlsWithMethods.put(url.url(), method);
-        }
-        
-        ServletContext servletContext = getServletContext();
-        servletContext.setAttribute("urlsWithMethods", urlsWithMethods);
     }
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String servletPath = request.getServletPath();
-
-        if (servletContext.getResource(servletPath) != null)
-            contextDefaultDispatcher.forward(request, response);
-
+        if (ctx.getResource(request.getServletPath()) != null)
+            ctxDefaultDispatcher.forward(request, response);
         else {
-            response.setContentType("text/plain;charset=UTF-8");
-
-            try (PrintWriter printWriter = response.getWriter()) {
-                if (urlsWithMethods.containsKey(servletPath)) {
-                    Method method = urlsWithMethods.get(servletPath);
-
-                    Class<?> returnType = method.getReturnType();
-                    Class<?> methodClass = method.getDeclaringClass();
-
-                    // The constructor should be public
-                    Constructor<?> controllerConstructor = methodClass.getDeclaredConstructor();
-                    Object controller = controllerConstructor.newInstance();
-
-                    if (returnType.equals(ModelView.class)) {
-                        ModelView modelView = (ModelView) method.invoke(controller);
-
-                        for (Entry<String, Object> entry : modelView.getAttributes().entrySet())
-                            request.setAttribute(entry.getKey(), entry.getValue());
-
-                        String view = modelView.getView();
-                        RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
-                        requestDispatcher.forward(request, response);
-                    } else if (returnType.equals(String.class)) {
-                        String returnedString = (String) method.invoke(controller);
-                        printWriter.print("200 return String: " + returnedString);
-                    } else {
-                        printWriter.print("200 Method.invoke: " + method.getName());
-                        method.invoke(controller);
-                    }
-                }
-                else printWriter.print("404: " + servletPath);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            try {
+                handler.handle(request, response);
+            } catch (Exception e) {
                 throw new ServletException(e);
             }
         }

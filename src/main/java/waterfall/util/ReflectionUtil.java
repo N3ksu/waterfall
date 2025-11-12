@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class ReflectionUtil {
-    public static Set<Class<?>> findAnnotatedClasses(String packageName, Class<? extends Annotation> annotationClass)
+    public static Set<Class<?>> findAnnotatedClasses(String packageName, Class<? extends Annotation> classesAnnotationClass)
             throws IOException, URISyntaxException, ClassNotFoundException {
         String path = packageName.replace(".", "/");
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -25,40 +25,33 @@ public class ReflectionUtil {
             File directory = new File(resource.toURI());
 
             if (directory.exists() && directory.isDirectory())
-                findAndRetrieveAnnotatedClassesInDirectory(directory, packageName, classes, annotationClass);
+                findAndRetrieveAnnotatedClassesInDirectory(directory, packageName, classes, classesAnnotationClass);
         }
 
         return classes;
     }
 
-    private static void findAndRetrieveAnnotatedClassesInDirectory(File directory, String packageName, Set<Class<?>> classes, Class<? extends Annotation> annotationClass)
+    private static void findAndRetrieveAnnotatedClassesInDirectory(File directory, String packageName, Set<Class<?>> classes, Class<? extends Annotation> classesAnnotationClass)
             throws ClassNotFoundException {
         for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (file.isDirectory())
-                findAndRetrieveAnnotatedClassesInDirectory(file, packageName  + "." + file.getName(), classes, annotationClass);
+                findAndRetrieveAnnotatedClassesInDirectory(file, packageName  + "." + file.getName(), classes, classesAnnotationClass);
 
             else if (file.getName().endsWith(".class")) {
                 String className = packageName + "." + file.getName().replace(".class", "");
                 Class<?> clazz = Class.forName(className);
 
-                if(clazz.isAnnotationPresent(annotationClass))
+                if(clazz.isAnnotationPresent(classesAnnotationClass))
                     classes.add(clazz);
             }
         }
     }
 
-    public static Set<Method> findAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+    public static Set<Method> findAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> methodsAnnotationClass) {
         Set<Method> methods = new HashSet<>();
 
-        /*
-            java.lang.Class<T> getDeclaredMethods()
-                Returns an array containing Method objects reflecting all the declared methods of the class
-                or interface represented by this Class object,
-                including public, protected, default (package) access, and private methods,
-                but excluding inherited methods.
-        */
         for(Method method : clazz.getDeclaredMethods())
-            if(method.isAnnotationPresent(annotationClass))
+            if(method.isAnnotationPresent(methodsAnnotationClass))
                 methods.add(method);
 
         return methods;
