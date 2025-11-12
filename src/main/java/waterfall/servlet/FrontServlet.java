@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class FrontServlet extends HttpServlet {
@@ -85,6 +86,10 @@ public class FrontServlet extends HttpServlet {
 
                     if (returnType.equals(ModelView.class)) {
                         ModelView modelView = (ModelView) method.invoke(controller);
+
+                        for (Entry<String, Object> entry : modelView.getAttributes().entrySet())
+                            request.setAttribute(entry.getKey(), entry.getValue());
+
                         String view = modelView.getView();
                         RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
                         requestDispatcher.forward(request, response);
