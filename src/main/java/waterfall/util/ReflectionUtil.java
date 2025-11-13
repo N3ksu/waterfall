@@ -15,8 +15,8 @@ public class ReflectionUtil {
     public static Set<Class<?>> findAnnotatedClasses(String packageName, Class<? extends Annotation> classesAnnotationClass)
             throws IOException, URISyntaxException, ClassNotFoundException {
         String path = packageName.replace(".", "/");
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Enumeration<URL> resources = classLoader.getResources(path);
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Enumeration<URL> resources = loader.getResources(path);
 
         Set<Class<?>> classes = new HashSet<>();
 
