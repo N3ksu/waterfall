@@ -10,21 +10,21 @@ import java.io.PrintWriter;
 @Deprecated
 public class FrontFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String servletPath = request.getServletPath();
-        ServletContext servletContext = request.getServletContext();
+        HttpServletRequest request = (HttpServletRequest) req;
+        String path = request.getServletPath();
+        ServletContext ctx = request.getServletContext();
 
-        if(servletContext.getResource(servletPath) != null)
-            filterChain.doFilter(servletRequest, servletResponse);
+        if(ctx.getResource(path) != null)
+            chain.doFilter(req, res);
 
         else {
-            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            HttpServletResponse response = (HttpServletResponse) res;
             response.setContentType("text/plain;charset=UTF-8");
 
-            try (PrintWriter printWriter = response.getWriter()) {
-                printWriter.print(servletPath);
+            try (PrintWriter out = response.getWriter()) {
+                out.print(path);
             }
         }
     }
