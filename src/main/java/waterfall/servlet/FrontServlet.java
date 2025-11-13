@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.constant.WFConst;
-import waterfall.net.handler.ServletHandler;
+import waterfall.constant.WFC;
+import waterfall.net.processor.ControllerReturnValueProcessor;
 
 import java.io.IOException;
 
@@ -17,18 +17,18 @@ import java.io.IOException;
 public class FrontServlet extends HttpServlet {
     private ServletContext ctx;
     private RequestDispatcher ctxDefaultDispatcher;
-    private ServletHandler handler;
+    private ControllerReturnValueProcessor processor;
 
     @Override
     public void init()
             throws ServletException {
-        handler = ServletHandler.IMPL;
+        processor = ControllerReturnValueProcessor.IMPL;
         loadContextDefaultDispatcher();
     }
 
     private void loadContextDefaultDispatcher() {
         ctx = getServletContext();
-        ctxDefaultDispatcher = ctx.getNamedDispatcher(WFConst.CTX_DEFAULT_REQ_DISPATCHER_NAME);
+        ctxDefaultDispatcher = ctx.getNamedDispatcher(WFC.CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
         if (ctxDefaultDispatcher == null)
             throw new RuntimeException("The context's default dispatcher cannot be found");
@@ -41,7 +41,7 @@ public class FrontServlet extends HttpServlet {
             ctxDefaultDispatcher.forward(request, response);
         else {
             try {
-                handler.handle(request, response);
+                processor.process(request, response);
             } catch (Exception e) {
                 throw new ServletException(e);
             }

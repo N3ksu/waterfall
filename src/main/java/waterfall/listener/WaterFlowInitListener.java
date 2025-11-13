@@ -6,7 +6,7 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import waterfall.annotation.Controller;
 import waterfall.annotation.Url;
-import waterfall.constant.WFConst;
+import waterfall.constant.WFC;
 import waterfall.util.ReflectionUtil;
 
 import java.io.IOException;
@@ -24,12 +24,12 @@ public class WaterFlowInitListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext ctx = sce.getServletContext();
-        loadConfig(ctx);
-        loadRoutes(ctx);
+        loadWebAppConfig(ctx);
+        loadWebAppRoutes(ctx);
     }
 
-    private void loadConfig(ServletContext ctx) {
-        try (InputStream in = ctx.getResourceAsStream(WFConst.WEBAPP_CONFIG_FILE_URI)){
+    private void loadWebAppConfig(ServletContext ctx) {
+        try (InputStream in = ctx.getResourceAsStream(WFC.WEBAPP_CONFIG_FILE_URI)){
             Properties props = new Properties();
             props.load(in);
 
@@ -41,14 +41,14 @@ public class WaterFlowInitListener implements ServletContextListener {
         }
     }
 
-    private void loadRoutes(ServletContext ctx) {
-        ctx.setAttribute(WFConst.ROUTES_CTX_ATTR_NAME, getRoutes(ctx));
+    private void loadWebAppRoutes(ServletContext ctx) {
+        ctx.setAttribute(WFC.ROUTES_CTX_ATTR_NAME, getRoutes(ctx));
     }
 
     private Map<String, Method> getRoutes(ServletContext ctx) {
         try {
             // TODO what if controllerPackage was null
-            String controllerPackage = (String) ctx.getAttribute(WFConst.WEBAPP_CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
+            String controllerPackage = (String) ctx.getAttribute(WFC.WEBAPP_CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
             Set<Method> methods = ReflectionUtil
                     .findAnnotatedMethodsInAnnotatedClasses(controllerPackage, Url.class, Controller.class);
 

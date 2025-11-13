@@ -19,8 +19,8 @@ public class ModelView {
         this.view = view;
     }
 
-    public void setAttribute(String attribute, Object value) {
-        attributes.put(attribute, value);
+    public void setAttribute(String attr, Object value) {
+        attributes.put(attr, value);
     }
 
     public Map<String, Object> getAttributes() {

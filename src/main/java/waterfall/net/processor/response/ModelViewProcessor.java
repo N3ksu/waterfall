@@ -1,9 +1,10 @@
-package waterfall.net.handler.http;
+package waterfall.net.processor.response;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import waterfall.net.processor.response.contract.ResponseProcessor;
 import waterfall.view.ModelView;
 
 import java.io.IOException;
@@ -11,9 +12,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
-public class ModelViewHandler implements HttpHandler {
+public class ModelViewProcessor implements ResponseProcessor {
     @Override
-    public void handle(String url, Method action, Object controller, HttpServletRequest req, HttpServletResponse res)
+    public void process(String url, Method action, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {
         try {
             ModelView modelView = (ModelView) action.invoke(controller);
