@@ -34,7 +34,7 @@ public class WaterFlowInitListener implements ServletContextListener {
             props.load(in);
 
             for (Entry<Object, Object> prop: props.entrySet())
-                ctx.setAttribute(prop.getKey().toString(), prop.getValue());
+                ctx.setAttribute(prop.getKey().toString(), prop.getValue()); // We didn't need to convert the value into a string
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -42,7 +42,7 @@ public class WaterFlowInitListener implements ServletContextListener {
     }
 
     private void loadWebAppRoutes(ServletContext ctx) {
-        ctx.setAttribute(WFC.ROUTES_CTX_ATTR_NAME, getRoutes(ctx));
+        ctx.setAttribute(WFC.WEBAPP_ROUTES_CTX_ATTR_NAME, getRoutes(ctx));
     }
 
     private Map<String, Method> getRoutes(ServletContext ctx) {

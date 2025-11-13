@@ -12,10 +12,10 @@ import java.lang.reflect.Method;
 public class StringProcessor implements ResponseProcessor {
     @Override
     public void process(String url, Method action, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception {
-        try (PrintWriter printWriter = res.getWriter()) {
+        try (PrintWriter out = res.getWriter()) {
             res.setContentType("text/plain;charset=UTF-8");
             String actionResult = (String) action.invoke(controller);
-            printWriter.print("200 String: " + actionResult);
+            out.print("200 String: " + actionResult);
         } catch (IOException | IllegalAccessException | InvocationTargetException e) {
             throw new Exception(e);
         }

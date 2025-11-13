@@ -9,7 +9,6 @@ import waterfall.net.processor.response.contract.ResponseProcessor;
 import waterfall.view.ModelView;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,7 +21,7 @@ public class ControllerReturnValueProcessorImpl implements ControllerReturnValue
         String path = req.getServletPath();
         Map<String, Method> routes = Router.getRoutes(ctx);
 
-        try (PrintWriter printWriter = res.getWriter()) {
+        try {
             if (!routes.containsKey(path)) {
                 ResponseProcessor.NOT_MANAGED.process(path, null, null, req, res);
                 return;

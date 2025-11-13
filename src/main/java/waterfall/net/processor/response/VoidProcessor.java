@@ -12,9 +12,9 @@ import java.lang.reflect.Method;
 public class VoidProcessor implements ResponseProcessor {
     @Override
     public void process(String url, Method action, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception {
-        try (PrintWriter printWriter = res.getWriter()) {
+        try (PrintWriter out = res.getWriter()) {
             res.setContentType("text/plain;charset=UTF-8");
-            printWriter.print("200 Invoke: " + action.getName());
+            out.print("200 Invoke: " + action.getName());
             action.invoke(controller);
         } catch (IOException | IllegalAccessException | InvocationTargetException e) {
             throw new Exception(e);

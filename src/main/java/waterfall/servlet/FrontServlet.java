@@ -13,7 +13,7 @@ import waterfall.net.processor.ControllerReturnValueProcessor;
 
 import java.io.IOException;
 
-@WebServlet("/")
+@WebServlet(WFC.FRONT_SERVLET_URL_MAPPING)
 public class FrontServlet extends HttpServlet {
     private ServletContext ctx;
     private RequestDispatcher ctxDefaultDispatcher;
