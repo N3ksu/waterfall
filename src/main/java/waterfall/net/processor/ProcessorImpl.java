@@ -5,7 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import waterfall.net.Router;
-import waterfall.net.processor.response.contract.ResponseProcessor;
+import waterfall.net.processor.type.contract.TypeProcessor;
+import waterfall.net.processor.contract.Processor;
 import waterfall.view.ModelView;
 
 import java.io.IOException;
@@ -14,16 +15,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class ControllerReturnValueProcessorImpl implements ControllerReturnValueProcessor {
+public class ProcessorImpl implements Processor {
     @Override
     public void process(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        ServletContext ctx = req.getServletContext();
         String path = req.getServletPath();
+        ServletContext ctx = req.getServletContext();
         Map<String, Method> routes = Router.getRoutes(ctx);
 
         try {
             if (!routes.containsKey(path)) {
-                ResponseProcessor.NOT_MANAGED.process(path, null, null, req, res);
+                TypeProcessor.NOT_MANAGED.process(null, null, req, res);
                 return;
             }
 
@@ -38,11 +39,11 @@ public class ControllerReturnValueProcessorImpl implements ControllerReturnValue
 
             // TODO we can make those if statement as a foreach loop
             if (returnType.equals(ModelView.class)) {
-                ResponseProcessor.MODEL_VIEW.process(path, method, controller, req, res);
+                TypeProcessor.MODEL_VIEW.process(method, controller, req, res);
             } else if (returnType.equals(String.class)) {
-                ResponseProcessor.STRING.process(path, method, controller, req, res);
+                TypeProcessor.STRING.process(method, controller, req, res);
             } else {
-               ResponseProcessor.VOID.process(path, method, controller, req, res);
+               TypeProcessor.VOID.process(method, controller, req, res);
             }
 
             // TODO what if the return type cannot be used by the framework

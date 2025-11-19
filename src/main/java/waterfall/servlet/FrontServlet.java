@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import waterfall.constant.WFC;
-import waterfall.net.processor.ControllerReturnValueProcessor;
+import waterfall.net.processor.contract.Processor;
 
 import java.io.IOException;
 
@@ -17,12 +17,12 @@ import java.io.IOException;
 public class FrontServlet extends HttpServlet {
     private ServletContext ctx;
     private RequestDispatcher ctxDefaultDispatcher;
-    private ControllerReturnValueProcessor processor;
+    private Processor processor;
 
     @Override
     public void init()
             throws ServletException {
-        processor = ControllerReturnValueProcessor.IMPL;
+        processor = Processor.IMPL;
         loadContextDefaultDispatcher();
     }
 
@@ -35,13 +35,16 @@ public class FrontServlet extends HttpServlet {
     }
 
     @Override
-    public void service(HttpServletRequest request, HttpServletResponse response)
+    public void service(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        if (ctx.getResource(request.getServletPath()) != null)
-            ctxDefaultDispatcher.forward(request, response);
+        String path = req.getServletPath();
+
+        if (ctx.getResource(path) != null)
+            ctxDefaultDispatcher.forward(req, res);
+
         else {
             try {
-                processor.process(request, response);
+                processor.process(req, res);
             } catch (Exception e) {
                 throw new ServletException(e);
             }
