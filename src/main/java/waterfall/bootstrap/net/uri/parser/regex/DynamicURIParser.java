@@ -12,6 +12,6 @@ public class DynamicURIParser implements URIParser {
         String regex = "\\{(?<i>[A-Za-z_$][A-Za-z0-9_$]*)}";
         String replacement = "(?<${i}>.+?)";
 
-        return uri.replaceAll(regex, replacement);
+        return "^" + uri.replaceAll(regex, replacement) + "$";
     }
 }
