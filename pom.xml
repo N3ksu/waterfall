@@ -6,7 +6,7 @@
 
     <groupId>org.n3ksu</groupId>
     <artifactId>waterfall</artifactId>
-    <version>3.ter</version>
+    <version>6.ter</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
