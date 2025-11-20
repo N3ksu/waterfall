@@ -3,7 +3,7 @@ package waterfall.bootstrap;
 import jakarta.servlet.ServletContext;
 import waterfall.annotation.Controller;
 import waterfall.annotation.Url;
-import waterfall.key.WaterFallKey;
+import waterfall.constant.WaterFallConstant;
 import waterfall.bootstrap.net.router.RouterBuilder;
 import waterfall.reflection.IOReflectionUtil;
 
@@ -26,14 +26,14 @@ public final class WaterFallBootStrap {
     }
 
     public void boot()
-            throws IOException, URISyntaxException, ClassNotFoundException {
+            throws Exception {
         bootConfig();
         bootRouter();
     }
 
-    private void bootConfig() throws IOException {
+    private void bootConfig() throws Exception {
         // TODO What to do if the client doesn't have the properties file
-        InputStream in = ctx.getResourceAsStream(WaterFallKey.CONFIG_FILE_URI);
+        InputStream in = ctx.getResourceAsStream(WaterFallConstant.CONFIG_FILE_URI);
         Properties props = new Properties();
         props.load(in);
 
@@ -43,15 +43,15 @@ public final class WaterFallBootStrap {
         in.close();
     }
 
-    private void bootRouter() throws IOException, URISyntaxException, ClassNotFoundException {
-        ctx.setAttribute(WaterFallKey.ROUTER_CTX_ATTR_NAME, routerBuilder.build(retrieveRawRoutes()));
+    private void bootRouter() throws Exception {
+        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, routerBuilder.build(retrieveRawRoutes()));
     }
 
     private Map<String, Method> retrieveRawRoutes()
-            throws IOException, URISyntaxException, ClassNotFoundException {
+            throws Exception {
         // TODO what if controllerPackage was null
         String controllerPackage = (String) ctx
-                .getAttribute(WaterFallKey.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
+                .getAttribute(WaterFallConstant.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
 
         Set<Method> methods = IOReflectionUtil
                 .findAnnotatedMethodsInAnnotatedClasses(controllerPackage, Url.class, Controller.class);

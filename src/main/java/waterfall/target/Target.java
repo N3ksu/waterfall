@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import waterfall.bootstrap.net.route.Route;
 
-import java.lang.reflect.Method;
 
 public interface Target {
     Target VOID = new VoidTarget();

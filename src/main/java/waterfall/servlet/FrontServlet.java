@@ -7,12 +7,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.key.WaterFallKey;
+import waterfall.constant.WaterFallConstant;
 import waterfall.dispatcher.IWaterFallDispatcher;
 
 import java.io.IOException;
 
-@WebServlet(WaterFallKey.FRONT_SERVLET_URL_MAPPING)
+@WebServlet(WaterFallConstant.FRONT_SERVLET_URL_MAPPING)
 public class FrontServlet extends HttpServlet {
     private RequestDispatcher ctxDefaultDispatcher;
     private IWaterFallDispatcher waterFallDispatcher;
@@ -23,7 +23,7 @@ public class FrontServlet extends HttpServlet {
         waterFallDispatcher = IWaterFallDispatcher.IMPL;
 
         ctxDefaultDispatcher = getServletContext()
-                .getNamedDispatcher(WaterFallKey.CTX_DEFAULT_REQ_DISPATCHER_NAME);
+                .getNamedDispatcher(WaterFallConstant.CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
         if (ctxDefaultDispatcher == null)
             throw new ServletException("The context's default dispatcher cannot be found");

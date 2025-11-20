@@ -4,8 +4,7 @@ import waterfall.bootstrap.net.uri.parser.regex.URIParser;
 
 public enum URIType {
     STATIC(URIParser.STATIC),
-    DYNAMIC(URIParser.DYNAMIC),
-    UNKNOWN(null);
+    DYNAMIC(URIParser.DYNAMIC);
 
     private final URIParser parser;
 

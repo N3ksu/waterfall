@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 public final class ReflectionUtil {
     public static Object newInstanceFromNoArgsConstructor(Class<?> c)
-            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            throws Exception {
         Constructor<?> ctr = c.getDeclaredConstructor();
         ctr.setAccessible(true); // ! making the constructor public
         return ctr.newInstance();
