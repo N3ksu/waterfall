@@ -1,4 +1,4 @@
-package waterfall.core.reflection.util;
+package waterfall.util.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

@@ -15,13 +15,10 @@ import java.io.IOException;
 @WebServlet(WaterFallConstant.FRONT_SERVLET_URL_MAPPING)
 public final class FrontServlet extends HttpServlet {
     private RequestDispatcher ctxDefaultDispatcher;
-    private WaterFallDispatcher waterFallDispatcher;
 
     @Override
     public void init()
             throws ServletException {
-        waterFallDispatcher = new WaterFallDispatcher();
-
         ctxDefaultDispatcher = getServletContext()
                 .getNamedDispatcher(WaterFallConstant.CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
@@ -39,7 +36,7 @@ public final class FrontServlet extends HttpServlet {
 
         else {
             try {
-                waterFallDispatcher.forward(req, res);
+                WaterFallDispatcher.forward(req, res);
             } catch (Exception e) {
                 throw new ServletException(e);
             }

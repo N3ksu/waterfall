@@ -5,7 +5,7 @@ import waterfall.component.annotation.Controller;
 import waterfall.component.annotation.Url;
 import waterfall.constant.WaterFallConstant;
 import waterfall.bootstrap.router.RouterBuilder;
-import waterfall.core.reflection.util.IOReflectionUtil;
+import waterfall.util.reflection.IOReflectionUtil;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -16,11 +16,9 @@ import java.util.Set;
 
 public final class WaterFallBootStrap {
     private final ServletContext ctx;
-    private final RouterBuilder routerBuilder;
 
     public WaterFallBootStrap(ServletContext ctx) {
         this.ctx = ctx;
-        routerBuilder = new RouterBuilder();
     }
 
     public void boot()
@@ -42,7 +40,7 @@ public final class WaterFallBootStrap {
     }
 
     private void bootRouter() throws Exception {
-        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, routerBuilder.build(retrieveRawRoutes()));
+        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, RouterBuilder.build(retrieveRawRoutes()));
     }
 
     private Map<String, Method> retrieveRawRoutes()

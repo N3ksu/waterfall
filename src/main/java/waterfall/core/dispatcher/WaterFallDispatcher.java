@@ -7,14 +7,14 @@ import waterfall.core.reflection.ArgumentResolver;
 import waterfall.core.route.Route;
 import waterfall.core.router.Router;
 import waterfall.constant.WaterFallConstant;
-import waterfall.core.reflection.util.ReflectionUtil;
+import waterfall.util.reflection.ReflectionUtil;
 import waterfall.core.target.ITarget;
 import waterfall.component.ui.ModelView;
 
 import java.lang.reflect.Method;
 
 public final class WaterFallDispatcher {
-    public void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public static void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String path = req.getServletPath();
         ServletContext ctx = req.getServletContext();
         Router router = (Router) ctx.getAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME);
@@ -32,8 +32,8 @@ public final class WaterFallDispatcher {
         Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(controllerClass);
 
         // Getting the arguments for the controller's method
-        ArgumentResolver argResolver = new ArgumentResolver();
-        Object[] args = argResolver.resolve(route, req);
+        // TODO How can we deal with arrays ou Collection
+        Object[] args = ArgumentResolver.resolve(route, req);
 
         // Getting the return type of the controller's method
         Class<?> returnType = method.getReturnType();
