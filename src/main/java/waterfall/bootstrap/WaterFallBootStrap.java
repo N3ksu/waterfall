@@ -1,16 +1,14 @@
 package waterfall.bootstrap;
 
 import jakarta.servlet.ServletContext;
-import waterfall.annotation.Controller;
-import waterfall.annotation.Url;
+import waterfall.component.annotation.Controller;
+import waterfall.component.annotation.Url;
 import waterfall.constant.WaterFallConstant;
-import waterfall.bootstrap.net.router.RouterBuilder;
-import waterfall.reflection.IOReflectionUtil;
+import waterfall.bootstrap.router.RouterBuilder;
+import waterfall.core.reflection.util.IOReflectionUtil;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
