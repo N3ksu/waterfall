@@ -1,30 +1,31 @@
-package waterfall.net.processor.type;
+package waterfall.target;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import waterfall.net.processor.type.contract.TypeProcessor;
-import waterfall.view.ModelView;
+import waterfall.bootstrap.net.route.Route;
+import waterfall.ui.ModelView;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
-public class ModelViewProcessor implements TypeProcessor {
+public class ModelViewTarget implements Target {
     @Override
-    public void process(Method action, Object controller, HttpServletRequest req, HttpServletResponse res)
+    public void land(Route route, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {
         try {
-            ModelView modelView = (ModelView) action.invoke(controller);
+            Method method = route.getMethod();
+            ModelView modelView = (ModelView) method.invoke(controller);
 
             String view = modelView.getView();
             RequestDispatcher reqDispatcher = req.getRequestDispatcher(view);
 
             if (reqDispatcher == null) {
                 res.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "The view set for the ModelView inside " + action.getName() + " inside " + controller.getClass().getName() + " cannot be found");
+                        "The view set for the ModelView inside " + method.getName() + " inside " + controller.getClass().getName() + " cannot be found");
                 return;
             }
 
