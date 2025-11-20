@@ -8,20 +8,7 @@ import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
 public final class RouteBuilder {
-    private String uri;
-    private Method method;
-
-    public RouteBuilder setMethod(Method method) {
-        this.method = method;
-        return this;
-    }
-
-    public RouteBuilder setUri(String uri) {
-        this.uri = uri;
-        return this;
-    }
-
-    public Route build() {
+    public static Route build(String uri, Method method) {
         if (uri == null)
             throw new NullPointerException("Cannot build a Route from an uri null");
 

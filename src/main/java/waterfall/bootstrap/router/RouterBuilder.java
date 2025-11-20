@@ -11,21 +11,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public final class RouterBuilder {
-    private final RouteBuilder routeBuilder;
-
-    public RouterBuilder() {
-        routeBuilder = new RouteBuilder();
-    }
-
-    public Router build(Map<String, Method> m) {
+    public static Router build(Map<String, Method> m) {
         List<Route> routes = new ArrayList<>();
 
         for (Entry<String, Method> e: m.entrySet()) {
-            Route route = routeBuilder
-                    .setUri(e.getKey())
-                    .setMethod(e.getValue())
-                    .build();
-
+            Route route = RouteBuilder.build(e.getKey(), e.getValue());
             routes.add(route);
         }
 

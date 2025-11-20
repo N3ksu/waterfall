@@ -3,13 +3,14 @@ package waterfall.core.reflection;
 import jakarta.servlet.http.HttpServletRequest;
 import waterfall.component.annotation.RequestParam;
 import waterfall.core.route.Route;
+import waterfall.util.parser.StringParser;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 
 public final class ArgumentResolver {
-    public Object[] resolve(Route route, HttpServletRequest req) throws Exception {
+    public static Object[] resolve(Route route, HttpServletRequest req) throws Exception {
         Method method = route.getMethod();
         String path = req.getServletPath();
         Parameter[] params = method.getParameters();
@@ -19,25 +20,20 @@ public final class ArgumentResolver {
         for (int i = 0; i < params.length; i++) {
             Parameter param = params[i];
             String paramName = param.getName();
+            Class<?> paramType = param.getType();
 
             if (pathVariables.containsKey(paramName)) {
                 String pathVariableValue = pathVariables.get(paramName);
-                // TODO The framework only supports String for now
-                Object value = pathVariableValue;
-                args[i] = value;
+                args[i] = StringParser.parse(pathVariableValue, paramType);
                 continue;
             } else if (param.isAnnotationPresent(RequestParam.class)) {
                 RequestParam reqParam = param.getAnnotation(RequestParam.class);
                 String paramValue = req.getParameter(reqParam.name());
-                // TODO The framework only supports String for now
-                Object value = paramValue;
-                args[i] = value;
+                args[i] = StringParser.parse(paramValue, paramType);
                 continue;
             } else if (req.getParameter(paramName) != null) {
                 String paramValue = req.getParameter(paramName);
-                // TODO The framework only supports String for now
-                Object value = paramValue;
-                args[i] = value;
+                args[i] = StringParser.parse(paramValue, paramType);
                 continue;
             }
 
