@@ -1,6 +1,6 @@
 package waterfall.constant;
 
-public class WaterFallConstant {
+public final class WaterFallConstant {
     // Context key
     public static final String ROUTER_CTX_ATTR_NAME = "wf.router";
 

@@ -1,4 +1,4 @@
-package waterfall.servlet;
+package waterfall.web.servlet;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -8,19 +8,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import waterfall.constant.WaterFallConstant;
-import waterfall.dispatcher.IWaterFallDispatcher;
+import waterfall.core.dispatcher.WaterFallDispatcher;
 
 import java.io.IOException;
 
 @WebServlet(WaterFallConstant.FRONT_SERVLET_URL_MAPPING)
-public class FrontServlet extends HttpServlet {
+public final class FrontServlet extends HttpServlet {
     private RequestDispatcher ctxDefaultDispatcher;
-    private IWaterFallDispatcher waterFallDispatcher;
+    private WaterFallDispatcher waterFallDispatcher;
 
     @Override
     public void init()
             throws ServletException {
-        waterFallDispatcher = IWaterFallDispatcher.IMPL;
+        waterFallDispatcher = new WaterFallDispatcher();
 
         ctxDefaultDispatcher = getServletContext()
                 .getNamedDispatcher(WaterFallConstant.CTX_DEFAULT_REQ_DISPATCHER_NAME);

@@ -1,6 +1,6 @@
 package waterfall.bootstrap.net.uri.parser.regex;
 
-public class DynamicURIParser implements URIParser {
+public final class DynamicURIParser implements URIParser {
     @Override
     public String parse(String uri) {
         long openingBracesCount = uri.chars().filter(c -> c == '{').count();

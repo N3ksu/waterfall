@@ -1,15 +1,15 @@
-package waterfall.target;
+package waterfall.core.target;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import waterfall.bootstrap.net.route.Route;
-import waterfall.ui.ModelView;
+import waterfall.component.ui.ModelView;
 
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
-public class ModelViewTarget implements Target {
+public class ModelViewTarget implements ITarget {
     @Override
     public void land(Route route, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {

@@ -1,15 +1,15 @@
-package waterfall.target;
+package waterfall.core.target;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import waterfall.bootstrap.net.route.Route;
 
 
-public interface Target {
-    Target VOID = new VoidTarget();
-    Target STRING = new StringTarget();
-    Target MODEL_VIEW = new ModelViewTarget();
-    Target NOT_FOUND = new NotFoundTarget();
+public interface ITarget {
+    ITarget VOID = new VoidTarget();
+    ITarget STRING = new StringTarget();
+    ITarget MODEL_VIEW = new ModelViewTarget();
+    ITarget NOT_FOUND = new NotFoundTarget();
 
     void land(Route route, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception;
 }

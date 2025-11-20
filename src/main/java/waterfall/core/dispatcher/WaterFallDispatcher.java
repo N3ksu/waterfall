@@ -1,20 +1,18 @@
-package waterfall.dispatcher;
+package waterfall.core.dispatcher;
 
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import waterfall.constant.WaterFallConstant;
-import waterfall.reflection.ReflectionUtil;
-import waterfall.target.Target;
 import waterfall.bootstrap.net.route.Route;
 import waterfall.bootstrap.net.router.Router;
-import waterfall.ui.ModelView;
+import waterfall.constant.WaterFallConstant;
+import waterfall.core.reflection.util.ReflectionUtil;
+import waterfall.core.target.ITarget;
+import waterfall.component.ui.ModelView;
 
 import java.lang.reflect.Method;
 
-public class WaterFallDispatcher implements IWaterFallDispatcher {
-    @Override
+public final class WaterFallDispatcher {
     public void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String path = req.getServletPath();
         ServletContext ctx = req.getServletContext();
@@ -23,7 +21,7 @@ public class WaterFallDispatcher implements IWaterFallDispatcher {
         Route route = router.findRoute(path);
 
         if (route == null) {
-            Target.NOT_FOUND.land(null, null, req, res);
+            ITarget.NOT_FOUND.land(null, null, req, res);
             return;
         }
 
@@ -35,11 +33,11 @@ public class WaterFallDispatcher implements IWaterFallDispatcher {
 
         // TODO we can improve those if statement
         if (returnType.equals(ModelView.class)) {
-            Target.MODEL_VIEW.land(route, controller, req, res);
+            ITarget.MODEL_VIEW.land(route, controller, req, res);
         } else if (returnType.equals(String.class)) {
-            Target.STRING.land(route, controller, req, res);
+            ITarget.STRING.land(route, controller, req, res);
         } else if (returnType.equals(void.class)) {
-           Target.VOID.land(route, controller, req, res);
+           ITarget.VOID.land(route, controller, req, res);
         } else {
             // TODO what if the return type cannot be used by the framework
         }

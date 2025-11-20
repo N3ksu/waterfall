@@ -1,10 +1,8 @@
-package waterfall.reflection;
+package waterfall.core.reflection.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -47,23 +45,13 @@ public final class IOReflectionUtil {
         }
     }
 
-    public static Set<Method> findAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> methodsAnnotationClass) {
-        Set<Method> methods = new HashSet<>();
-
-        for(Method method : clazz.getDeclaredMethods())
-            if(method.isAnnotationPresent(methodsAnnotationClass))
-                methods.add(method);
-
-        return methods;
-    }
-
     public static Set<Method> findAnnotatedMethodsInAnnotatedClasses(String packageName, Class<? extends Annotation> methodsAnnotationClass ,Class<? extends Annotation> classesAnnotationClass)
             throws Exception {
         Set<Class<?>> classes = findAnnotatedClasses(packageName, classesAnnotationClass);
         Set<Method> methods = new HashSet<>();
 
         for (Class<?> clazz : classes)
-            methods.addAll(findAnnotatedMethods(clazz, methodsAnnotationClass));
+            methods.addAll(ReflectionUtil.findAnnotatedMethods(clazz, methodsAnnotationClass));
 
         return methods;
     }
