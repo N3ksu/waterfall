@@ -2,13 +2,13 @@ package waterfall.core.target;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import waterfall.bootstrap.net.route.Route;
+import waterfall.core.route.Route;
 
 import java.io.PrintWriter;
 
 public class NotFoundTarget implements ITarget {
     @Override
-    public void land(Route route, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public void land(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception {
         PrintWriter out = res.getWriter();
         String path = req.getServletPath();
 

@@ -3,7 +3,7 @@ package waterfall.core.target;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import waterfall.bootstrap.net.route.Route;
+import waterfall.core.route.Route;
 import waterfall.component.ui.ModelView;
 
 import java.lang.reflect.Method;
@@ -11,10 +11,10 @@ import java.util.Map.Entry;
 
 public class ModelViewTarget implements ITarget {
     @Override
-    public void land(Route route, Object controller, HttpServletRequest req, HttpServletResponse res)
+    public void land(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {
         Method method = route.getMethod();
-        ModelView modelView = (ModelView) method.invoke(controller);
+        ModelView modelView = (ModelView) method.invoke(controller, args);
 
         String view = modelView.getView();
         RequestDispatcher reqDispatcher = req.getRequestDispatcher(view);

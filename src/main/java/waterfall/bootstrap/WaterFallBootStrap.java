@@ -4,7 +4,7 @@ import jakarta.servlet.ServletContext;
 import waterfall.component.annotation.Controller;
 import waterfall.component.annotation.Url;
 import waterfall.constant.WaterFallConstant;
-import waterfall.bootstrap.net.router.RouterBuilder;
+import waterfall.bootstrap.router.RouterBuilder;
 import waterfall.core.reflection.util.IOReflectionUtil;
 
 import java.io.InputStream;
