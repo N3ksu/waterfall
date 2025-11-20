@@ -1,7 +1,8 @@
-package waterfall.bootstrap.net.route;
+package waterfall.bootstrap.route;
 
-import waterfall.bootstrap.net.uri.parser.regex.URIParser;
-import waterfall.bootstrap.net.uri.type.URIType;
+import waterfall.bootstrap.uri.parser.regex.URIParser;
+import waterfall.bootstrap.uri.type.URIType;
+import waterfall.core.route.Route;
 
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;

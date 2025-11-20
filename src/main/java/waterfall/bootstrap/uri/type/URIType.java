@@ -1,6 +1,6 @@
-package waterfall.bootstrap.net.uri.type;
+package waterfall.bootstrap.uri.type;
 
-import waterfall.bootstrap.net.uri.parser.regex.URIParser;
+import waterfall.bootstrap.uri.parser.regex.URIParser;
 
 public enum URIType {
     STATIC(URIParser.STATIC),

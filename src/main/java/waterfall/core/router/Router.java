@@ -1,6 +1,6 @@
-package waterfall.bootstrap.net.router;
+package waterfall.core.router;
 
-import waterfall.bootstrap.net.route.Route;
+import waterfall.core.route.Route;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package waterfall.bootstrap.net.uri.parser.regex;
+package waterfall.bootstrap.uri.parser.regex;
 
 public final class StaticURIParser implements URIParser {
     @Override
