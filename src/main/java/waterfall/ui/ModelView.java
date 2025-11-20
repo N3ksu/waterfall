@@ -1,4 +1,4 @@
-package waterfall.view;
+package waterfall.ui;
 
 import java.util.HashMap;
 import java.util.Map;

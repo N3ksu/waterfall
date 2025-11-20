@@ -1,47 +1,45 @@
 package waterfall.servlet;
 
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.constant.WFC;
-import waterfall.net.processor.ControllerReturnValueProcessor;
+import waterfall.constant.WaterFallConstant;
+import waterfall.dispatcher.IWaterFallDispatcher;
 
 import java.io.IOException;
 
-@WebServlet(WFC.FRONT_SERVLET_URL_MAPPING)
+@WebServlet(WaterFallConstant.FRONT_SERVLET_URL_MAPPING)
 public class FrontServlet extends HttpServlet {
-    private ServletContext ctx;
     private RequestDispatcher ctxDefaultDispatcher;
-    private ControllerReturnValueProcessor processor;
+    private IWaterFallDispatcher waterFallDispatcher;
 
     @Override
     public void init()
             throws ServletException {
-        processor = ControllerReturnValueProcessor.IMPL;
-        loadContextDefaultDispatcher();
-    }
+        waterFallDispatcher = IWaterFallDispatcher.IMPL;
 
-    private void loadContextDefaultDispatcher() {
-        ctx = getServletContext();
-        ctxDefaultDispatcher = ctx.getNamedDispatcher(WFC.CTX_DEFAULT_REQ_DISPATCHER_NAME);
+        ctxDefaultDispatcher = getServletContext()
+                .getNamedDispatcher(WaterFallConstant.CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
         if (ctxDefaultDispatcher == null)
-            throw new RuntimeException("The context's default dispatcher cannot be found");
+            throw new ServletException("The context's default dispatcher cannot be found");
     }
 
     @Override
-    public void service(HttpServletRequest request, HttpServletResponse response)
+    public void service(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        if (ctx.getResource(request.getServletPath()) != null)
-            ctxDefaultDispatcher.forward(request, response);
+        String path = req.getServletPath();
+
+        if (getServletContext().getResource(path) != null)
+            ctxDefaultDispatcher.forward(req, res);
+
         else {
             try {
-                processor.process(request, response);
+                waterFallDispatcher.forward(req, res);
             } catch (Exception e) {
                 throw new ServletException(e);
             }

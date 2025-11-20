@@ -1,4 +1,4 @@
-package waterfall.util;
+package waterfall.reflection;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class ReflectionUtil {
+public final class IOReflectionUtil {
     public static Set<Class<?>> findAnnotatedClasses(String packageName, Class<? extends Annotation> classesAnnotationClass)
-            throws IOException, URISyntaxException, ClassNotFoundException {
+            throws Exception {
         String path = packageName.replace(".", "/");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Enumeration<URL> resources = loader.getResources(path);
@@ -32,7 +32,7 @@ public class ReflectionUtil {
     }
 
     private static void findAndRetrieveAnnotatedClassesInDirectory(File directory, String packageName, Set<Class<?>> classes, Class<? extends Annotation> classesAnnotationClass)
-            throws ClassNotFoundException {
+            throws Exception {
         for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (file.isDirectory())
                 findAndRetrieveAnnotatedClassesInDirectory(file, packageName  + "." + file.getName(), classes, classesAnnotationClass);
@@ -58,7 +58,7 @@ public class ReflectionUtil {
     }
 
     public static Set<Method> findAnnotatedMethodsInAnnotatedClasses(String packageName, Class<? extends Annotation> methodsAnnotationClass ,Class<? extends Annotation> classesAnnotationClass)
-            throws IOException, URISyntaxException, ClassNotFoundException {
+            throws Exception {
         Set<Class<?>> classes = findAnnotatedClasses(packageName, classesAnnotationClass);
         Set<Method> methods = new HashSet<>();
 
