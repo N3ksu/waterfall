@@ -10,7 +10,7 @@ public class DynamicURIParser implements URIParser {
             throw new RuntimeException("Malformed URI" + uri);
 
         String regex = "\\{(?<i>[A-Za-z_$][A-Za-z0-9_$]*)}";
-        String replacement = "(?<${i}>.+?)";
+        String replacement = "(?<${i}>[^/]+?)";
 
         return "^" + uri.replaceAll(regex, replacement) + "$";
     }
