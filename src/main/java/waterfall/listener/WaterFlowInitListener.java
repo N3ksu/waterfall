@@ -16,7 +16,7 @@ public class WaterFlowInitListener implements ServletContextListener {
         try {
             WaterFallBootStrap bootStrap = new WaterFallBootStrap(sce.getServletContext());
             bootStrap.boot();
-        } catch (IOException | URISyntaxException | ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
