@@ -32,7 +32,7 @@ public final class WaterFallDispatcher {
         Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(controllerClass);
 
         // Getting the arguments for the controller's method
-        // TODO How can we deal with arrays ou Collection
+        // TODO How can we deal with arrays or Collections
         Object[] args = ArgumentResolver.resolve(route, req);
 
         // Getting the return type of the controller's method

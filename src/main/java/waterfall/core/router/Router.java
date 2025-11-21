@@ -2,16 +2,16 @@ package waterfall.core.router;
 
 import waterfall.core.route.Route;
 
-import java.util.List;
+import java.util.Set;
 
 public class Router {
-    private final List<Route> routes;
+    private final Set<Route> routes;
 
-    public Router(List<Route> routes) {
+    public Router(Set<Route> routes) {
         this.routes = routes;
     }
 
-    public List<Route> getRoutes() {
+    public Set<Route> getRoutes() {
         return routes;
     }
 

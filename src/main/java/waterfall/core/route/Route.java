@@ -5,6 +5,7 @@ import waterfall.constant.WaterFallConstant;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,12 +14,14 @@ public class Route {
     private final String rgxUri;
     private final Method method;
     private final Pattern rgxPattern;
+    private final Set<String> pathVarKeys;
 
-    public Route(String uri, Method method, String rgxUri, Pattern rgxPattern) {
+    public Route(String uri, Method method, String rgxUri, Pattern rgxPattern, Set<String> pathVarKeys) {
         this.uri = uri;
         this.rgxPattern = rgxPattern;
         this.method = method;
         this.rgxUri = rgxUri;
+        this.pathVarKeys = pathVarKeys;
     }
 
     public String getRgxUri() {
@@ -37,23 +40,20 @@ public class Route {
         return rgxPattern;
     }
 
-    // Only matching uri should be passed here
     public Map<String, String> getPathVariables(String uri) throws Exception {
-        Map<String, String> pathVariable = new HashMap<>();
         Matcher uriMatcher = rgxPattern.matcher(uri);
 
-        if (!uriMatcher.matches()) // this is mandatory in order to advance the matcher otherwise matcher.group() will throw an Exception
+        // this is mandatory in order to advance the matcher otherwise matcher.group() will throw an Exception
+        if (!uriMatcher.matches())
             throw new Exception(uri + " doesn't match with " + this.uri);
 
-        Matcher groupFinder = WaterFallConstant.URI_GRP_RGX_PATTERN.matcher(rgxPattern.pattern());
-
-        while (groupFinder.find()) {
-            String key = groupFinder.group(1);
+        Map<String, String> pathVariables = new HashMap<>();
+        for (String key : pathVarKeys) {
             String value = uriMatcher.group(key);
-            pathVariable.put(key, value);
+            pathVariables.put(key, value);
         }
 
-        return pathVariable;
+        return pathVariables;
     }
 
     @Override

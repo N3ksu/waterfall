@@ -5,14 +5,14 @@ import waterfall.bootstrap.route.RouteBuilder;
 import waterfall.core.router.Router;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public final class RouterBuilder {
     public static Router build(Map<String, Method> m) {
-        List<Route> routes = new ArrayList<>();
+        Set<Route> routes = new HashSet<>();
 
         for (Entry<String, Method> e: m.entrySet()) {
             Route route = RouteBuilder.build(e.getKey(), e.getValue());
