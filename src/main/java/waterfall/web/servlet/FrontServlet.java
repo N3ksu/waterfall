@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.constant.WaterFallConstant;
+import waterfall.core.constant.WaterFallConstant;
 import waterfall.core.dispatcher.WaterFallDispatcher;
 
 import java.io.IOException;

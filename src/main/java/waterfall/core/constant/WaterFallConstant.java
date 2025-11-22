@@ -1,4 +1,4 @@
-package waterfall.constant;
+package waterfall.core.constant;
 
 import java.util.regex.Pattern;
 

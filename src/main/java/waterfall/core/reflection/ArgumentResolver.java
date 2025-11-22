@@ -1,7 +1,7 @@
 package waterfall.core.reflection;
 
 import jakarta.servlet.http.HttpServletRequest;
-import waterfall.component.annotation.RequestParam;
+import waterfall.component.annotation.request.RequestParam;
 import waterfall.core.route.Route;
 import waterfall.util.parser.StringParser;
 
@@ -22,6 +22,7 @@ public final class ArgumentResolver {
             String paramName = param.getName();
             Class<?> paramType = param.getType();
 
+            // TODO We can improve those if statement
             if (pathVariables.containsKey(paramName)) {
                 String pathVariableValue = pathVariables.get(paramName);
                 args[i] = StringParser.parse(pathVariableValue, paramType);

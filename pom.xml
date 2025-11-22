@@ -6,7 +6,7 @@
 
     <groupId>org.n3ksu</groupId>
     <artifactId>waterfall</artifactId>
-    <version>6.ter</version>
+    <version>7</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -43,6 +43,7 @@
 
                         <configuration>
                             <target>
+                                <delete file="${cascade.lib.directory}/${project.build.finalName}.jar"/>
                                 <copy file="${project.build.directory}/${project.build.finalName}.jar"
                                       tofile="${cascade.lib.directory}/${project.build.finalName}.jar"/>
                             </target>
