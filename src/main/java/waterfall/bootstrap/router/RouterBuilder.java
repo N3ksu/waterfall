@@ -1,22 +1,23 @@
 package waterfall.bootstrap.router;
 
+import waterfall.component.annotation.request.mapping.RequestMapping;
 import waterfall.core.route.Route;
 import waterfall.bootstrap.route.RouteBuilder;
 import waterfall.core.router.Router;
 
 import java.lang.reflect.Method;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Set;
 
 public final class RouterBuilder {
-    public static Router build(Map<String, Method> m) {
+    public static Router build(Set<SimpleEntry<Method, RequestMapping>> entries) throws Exception {
         Set<Route> routes = new HashSet<>();
 
-        for (Entry<String, Method> e: m.entrySet()) {
-            Route route = RouteBuilder.build(e.getKey(), e.getValue());
-            routes.add(route);
+        for (SimpleEntry<Method, RequestMapping> entry : entries) {
+            List<Route> routeList = RouteBuilder.build(entry.getKey(), entry.getValue());
+            routes.addAll(routeList);
         }
 
         return new Router(routes);

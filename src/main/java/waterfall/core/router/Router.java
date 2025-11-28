@@ -1,5 +1,6 @@
 package waterfall.core.router;
 
+import waterfall.component.http.HttpMethod;
 import waterfall.core.route.Route;
 
 import java.util.Set;
@@ -15,9 +16,9 @@ public class Router {
         return routes;
     }
 
-    public Route findRoute(String uri) {
+    public Route findRoute(HttpMethod httpMethod, String uri) {
         for (Route route: routes)
-            if (route.getRgxPattern().matcher(uri).matches())
+            if (route.getHttpMethod().equals(httpMethod) && route.getRgxPattern().matcher(uri).matches())
                 return route;
 
         return null;

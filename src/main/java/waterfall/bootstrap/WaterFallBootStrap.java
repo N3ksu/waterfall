@@ -1,15 +1,15 @@
 package waterfall.bootstrap;
 
 import jakarta.servlet.ServletContext;
-import waterfall.component.annotation.Controller;
-import waterfall.component.annotation.Url;
-import waterfall.constant.WaterFallConstant;
 import waterfall.bootstrap.router.RouterBuilder;
-import waterfall.util.reflection.IOReflectionUtil;
+import waterfall.component.annotation.Controller;
+import waterfall.component.annotation.request.mapping.RequestMapping;
+import waterfall.core.constant.WaterFallConstant;
+import waterfall.core.reflection.IOReflectionUtil;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -40,25 +40,8 @@ public final class WaterFallBootStrap {
     }
 
     private void bootRouter() throws Exception {
-        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, RouterBuilder.build(retrieveRawRoutes()));
-    }
-
-    private Map<String, Method> retrieveRawRoutes()
-            throws Exception {
-        // TODO what if controllerPackage was null
-        String controllerPackage = (String) ctx
-                .getAttribute(WaterFallConstant.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
-
-        Set<Method> methods = IOReflectionUtil
-                .findAnnotatedMethodsInAnnotatedClasses(controllerPackage, Url.class, Controller.class);
-
-        Map<String, Method> routes = new HashMap<>();
-
-        for(Method method : methods) {
-            Url url = method.getAnnotation(Url.class);
-            routes.put(url.pattern(), method);
-        }
-
-        return routes;
+        String controllerPackage = (String) ctx.getAttribute(WaterFallConstant.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
+        Set<SimpleEntry<Method, RequestMapping>> annotatedMethodEntries = IOReflectionUtil.findAnnotatedMethodEntriesInPackage(controllerPackage, RequestMapping.class, Controller.class);
+        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, RouterBuilder.build(annotatedMethodEntries));
     }
 }

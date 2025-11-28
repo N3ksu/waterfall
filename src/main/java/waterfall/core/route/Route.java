@@ -1,6 +1,6 @@
 package waterfall.core.route;
 
-import waterfall.constant.WaterFallConstant;
+import waterfall.component.http.HttpMethod;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -10,13 +10,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Route {
+    private final HttpMethod httpMethod;
     private final String uri;
     private final String rgxUri;
     private final Method method;
     private final Pattern rgxPattern;
     private final Set<String> pathVarKeys;
 
-    public Route(String uri, Method method, String rgxUri, Pattern rgxPattern, Set<String> pathVarKeys) {
+    public Route(HttpMethod httpMethod, String uri, Method method, String rgxUri, Pattern rgxPattern, Set<String> pathVarKeys) {
+        this.httpMethod = httpMethod;
         this.uri = uri;
         this.rgxPattern = rgxPattern;
         this.method = method;
@@ -24,12 +26,16 @@ public class Route {
         this.pathVarKeys = pathVarKeys;
     }
 
-    public String getRgxUri() {
-        return rgxUri;
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
     }
 
     public String getUri() {
         return uri;
+    }
+
+    public String getRgxUri() {
+        return rgxUri;
     }
 
     public Method getMethod() {

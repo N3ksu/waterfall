@@ -3,11 +3,12 @@ package waterfall.core.dispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import waterfall.component.http.HttpMethod;
 import waterfall.core.reflection.ArgumentResolver;
 import waterfall.core.route.Route;
 import waterfall.core.router.Router;
-import waterfall.constant.WaterFallConstant;
-import waterfall.util.reflection.ReflectionUtil;
+import waterfall.core.constant.WaterFallConstant;
+import waterfall.core.reflection.ReflectionUtil;
 import waterfall.core.target.ITarget;
 import waterfall.component.ui.ModelView;
 
@@ -15,11 +16,12 @@ import java.lang.reflect.Method;
 
 public final class WaterFallDispatcher {
     public static void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String path = req.getServletPath();
         ServletContext ctx = req.getServletContext();
         Router router = (Router) ctx.getAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME);
 
-        Route route = router.findRoute(path);
+        HttpMethod httpMethod = HttpMethod.typeOf(req.getMethod());
+        String path = req.getServletPath();
+        Route route = router.findRoute(httpMethod, path);
 
         if (route == null) {
             ITarget.NOT_FOUND.land(null, null, null, req, res);
