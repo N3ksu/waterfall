@@ -1,11 +1,12 @@
 package waterfall.core.reflection;
 
+import waterfall.util.tuple.Pair;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
 
 public final class IOReflectionUtil {
     public static Set<Class<?>> findAnnotatedClassesInPackage(String packageName, Class<? extends Annotation> annotationClass)
@@ -54,14 +55,14 @@ public final class IOReflectionUtil {
         return methods;
     }
 
-    public static <T extends Annotation> Set<SimpleEntry<Method, T>> findAnnotatedMethodEntriesInPackage(String packageName, Class<T> methodsAnnotationClass, Class<? extends Annotation> classesAnnotationClass)
+    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairsInPackage(String packageName, Class<T> methodsAnnotationClass, Class<? extends Annotation> classesAnnotationClass)
             throws Exception {
         Set<Class<?>> classes = findAnnotatedClassesInPackage(packageName, classesAnnotationClass);
-        Set<SimpleEntry<Method, T>> entries = new HashSet<>();
+        Set<Pair<Method, T>> pairs = new HashSet<>();
 
         for (Class<?> c : classes)
-            entries.addAll(ReflectionUtil.findAnnotatedMethodEntries(c, methodsAnnotationClass));
+            pairs.addAll(ReflectionUtil.findMethodAndAnnotationPairs(c, methodsAnnotationClass));
 
-        return  entries;
+        return  pairs;
     }
 }

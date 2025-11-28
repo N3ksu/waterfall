@@ -6,10 +6,10 @@ import waterfall.component.annotation.Controller;
 import waterfall.component.annotation.request.mapping.RequestMapping;
 import waterfall.core.constant.WaterFallConstant;
 import waterfall.core.reflection.IOReflectionUtil;
+import waterfall.util.tuple.Pair;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -34,14 +34,17 @@ public final class WaterFallBootStrap {
         props.load(in);
 
         for (Map.Entry<Object, Object> prop: props.entrySet())
-            ctx.setAttribute(prop.getKey().toString(), prop.getValue()); // We didn't need to convert the Value into a string
+            ctx.setAttribute(prop.getKey().toString(), prop.getValue().toString());
 
         in.close();
     }
 
     private void bootRouter() throws Exception {
         String controllerPackage = (String) ctx.getAttribute(WaterFallConstant.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
-        Set<SimpleEntry<Method, RequestMapping>> annotatedMethodEntries = IOReflectionUtil.findAnnotatedMethodEntriesInPackage(controllerPackage, RequestMapping.class, Controller.class);
+
+        Set<Pair<Method, RequestMapping>> methodAndAnnotationPairs = IOReflectionUtil
+                .findMethodAndAnnotationPairsInPackage(controllerPackage, RequestMapping.class, Controller.class);
+
         ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, RouterBuilder.build(annotatedMethodEntries));
     }
 }

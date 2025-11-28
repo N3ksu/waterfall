@@ -9,7 +9,7 @@ import waterfall.component.ui.ModelView;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
-public class ModelViewTarget implements ITarget {
+public class ModelViewTarget implements Target {
     @Override
     public void land(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {
