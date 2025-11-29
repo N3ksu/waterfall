@@ -9,12 +9,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import waterfall.core.constant.WaterFallConstant;
 import waterfall.core.dispatcher.WaterFallDispatcher;
+import waterfall.core.router.Router;
 
 import java.io.IOException;
 
 @WebServlet(WaterFallConstant.FRONT_SERVLET_URL_MAPPING)
 public final class FrontServlet extends HttpServlet {
     private RequestDispatcher ctxDefaultDispatcher;
+    private WaterFallDispatcher waterFallDispatcher;
 
     @Override
     public void init()
@@ -24,6 +26,11 @@ public final class FrontServlet extends HttpServlet {
 
         if (ctxDefaultDispatcher == null)
             throw new ServletException("The context's default dispatcher cannot be found");
+
+        Router router = (Router) getServletContext()
+                .getAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME);
+
+        waterFallDispatcher = new WaterFallDispatcher(router);
     }
 
     @Override
@@ -36,7 +43,7 @@ public final class FrontServlet extends HttpServlet {
 
         else {
             try {
-                WaterFallDispatcher.forward(req, res);
+                waterFallDispatcher.forward(req, res);
             } catch (Exception e) {
                 throw new ServletException(e);
             }

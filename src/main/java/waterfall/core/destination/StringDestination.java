@@ -1,4 +1,4 @@
-package waterfall.core.target;
+package waterfall.core.destination;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,9 +7,9 @@ import waterfall.core.route.Route;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
-public class StringTarget implements Target {
+public class StringDestination implements Destination {
     @Override
-    public void land(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public void forward(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res) throws Exception {
         PrintWriter out = res.getWriter();
         Method method = route.getMethod();
         String actionResult = (String) method.invoke(controller, args);

@@ -16,9 +16,11 @@ import java.util.Set;
 
 public final class WaterFallBootStrap {
     private final ServletContext ctx;
+    private final RouterBuilder routerBuilder;
 
     public WaterFallBootStrap(ServletContext ctx) {
         this.ctx = ctx;
+        routerBuilder = new RouterBuilder();
     }
 
     public void boot()
@@ -43,8 +45,8 @@ public final class WaterFallBootStrap {
         String controllerPackage = (String) ctx.getAttribute(WaterFallConstant.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
 
         Set<Pair<Method, RequestMapping>> methodAndAnnotationPairs = IOReflectionUtil
-                .findMethodAndAnnotationPairsInPackage(controllerPackage, RequestMapping.class, Controller.class);
+                .findMethodAndAnnotationPairsInAnnotatedClassesInPackage(controllerPackage, Controller.class, RequestMapping.class);
 
-        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, RouterBuilder.build(annotatedMethodEntries));
+        ctx.setAttribute(WaterFallConstant.ROUTER_CTX_ATTR_NAME, routerBuilder.build(methodAndAnnotationPairs));
     }
 }

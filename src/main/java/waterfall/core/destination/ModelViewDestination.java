@@ -1,4 +1,4 @@
-package waterfall.core.target;
+package waterfall.core.destination;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,9 +9,9 @@ import waterfall.component.ui.ModelView;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
-public class ModelViewTarget implements Target {
+public class ModelViewDestination implements Destination {
     @Override
-    public void land(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res)
+    public void forward(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {
         Method method = route.getMethod();
         ModelView modelView = (ModelView) method.invoke(controller, args);

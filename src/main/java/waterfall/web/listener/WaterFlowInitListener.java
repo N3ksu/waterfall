@@ -12,9 +12,10 @@ public final class WaterFlowInitListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
-            WaterFallBootStrap bootStrap = new WaterFallBootStrap(sce.getServletContext());
-            bootStrap.boot();
+            (new WaterFallBootStrap(sce.getServletContext())).boot();
         } catch (Exception e) {
+            e.printStackTrace(System.err);
+            System.err.flush();
             throw new RuntimeException(e);
         }
     }

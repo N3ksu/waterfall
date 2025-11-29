@@ -5,11 +5,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public final class CMergedAnnotationInvocationHandler implements InvocationHandler {
+public final class MergedAnnotationInvocationHandler implements InvocationHandler {
     private final Class<? extends Annotation> annotationClass;
     private final Map<String, Object> annotationMethodValues;
 
-    public CMergedAnnotationInvocationHandler(Class<? extends Annotation> hightestAnnotationClass, Map<String, Object> composedAnnotationMethodsValues) {
+    public MergedAnnotationInvocationHandler(Class<? extends Annotation> hightestAnnotationClass, Map<String, Object> composedAnnotationMethodsValues) {
         this.annotationClass = hightestAnnotationClass;
         this.annotationMethodValues = composedAnnotationMethodsValues;
     }

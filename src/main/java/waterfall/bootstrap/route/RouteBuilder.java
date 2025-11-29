@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class RouteBuilder {
-    public static Route[] build(Method method, RequestMapping requestMapping) throws Exception {
+    public Route[] build(Method method, RequestMapping requestMapping) throws Exception {
         Objects.requireNonNull(method, "Cannot build a Route from a method null");
         Objects.requireNonNull(requestMapping, "Cannot build a Route from a requestMapping null");
 
