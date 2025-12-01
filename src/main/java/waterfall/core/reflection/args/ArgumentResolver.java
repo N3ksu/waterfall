@@ -27,16 +27,17 @@ public final class ArgumentResolver {
 
         for (int i = 0; i < params.length; i++) {
             Parameter param = params[i];
-            Class<?> paramType = param.getType();
 
             if (isParamMapStringStringArray(param)) {
                 args[i] = req.getParameterMap();
                 continue;
             } else if ((pathVarValue = pathVariables.get(param.getName())) != null) {
                 // what if the client is dumb enough to use int[] id as a parameter
-                args[i] = argumentParser.parseString(pathVarValue, paramType);
+                args[i] = argumentParser.parseString(pathVarValue, param.getType());
                 continue;
             } else if ((paramValues = req.getParameterValues(getRequestParameterName(param))) != null) {
+                Class<?> paramType = param.getType();
+
                 if (paramType.isArray()) {
                     Class<?> componentType = paramType.getComponentType();
                     Object array = Array.newInstance(componentType, paramValues.length);
