@@ -1,15 +1,18 @@
 package waterfall.core.reflection;
 
+import waterfall.util.tuple.Pair;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
 
 public final class IOReflectionUtil {
-    public static Set<Class<?>> findAnnotatedClassesInPackage(String packageName, Class<? extends Annotation> annotationClass)
+    public static Set<Class<?>> findAnnotatedClassesInPackage(
+            String packageName, Class<? extends Annotation> annotationClass)
             throws Exception {
+
         String path = packageName.replace(".", "/");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Enumeration<URL> resources = loader.getResources(path);
@@ -27,8 +30,10 @@ public final class IOReflectionUtil {
         return classes;
     }
 
-    private static void findAndRetrieveAnnotatedClassesInDirectory(File directory, String packageName, Set<Class<?>> classes, Class<? extends Annotation> annotationClass)
+    private static void findAndRetrieveAnnotatedClassesInDirectory(
+            File directory, String packageName, Set<Class<?>> classes, Class<? extends Annotation> annotationClass)
             throws Exception {
+
         for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (file.isDirectory())
                 findAndRetrieveAnnotatedClassesInDirectory(file, packageName  + "." + file.getName(), classes, annotationClass);
@@ -43,25 +48,16 @@ public final class IOReflectionUtil {
         }
     }
 
-    public static Set<Method> findAnnotatedMethodsInPackage(String packageName, Class<? extends Annotation> methodsAnnotationClass, Class<? extends Annotation> classesAnnotationClass)
+    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairsInAnnotatedClassesInPackage(
+            String packageName, Class<? extends Annotation> classesAnnotationClass, Class<T> methodsAnnotationClass)
             throws Exception {
+
         Set<Class<?>> classes = findAnnotatedClassesInPackage(packageName, classesAnnotationClass);
-        Set<Method> methods = new HashSet<>();
+        Set<Pair<Method, T>> pairs = new HashSet<>();
 
         for (Class<?> c : classes)
-            methods.addAll(ReflectionUtil.findAnnotatedMethods(c, methodsAnnotationClass));
+            pairs.addAll(ReflectionUtil.findMethodAndAnnotationPairs(c, methodsAnnotationClass));
 
-        return methods;
-    }
-
-    public static <T extends Annotation> Set<SimpleEntry<Method, T>> findAnnotatedMethodEntriesInPackage(String packageName, Class<T> methodsAnnotationClass, Class<? extends Annotation> classesAnnotationClass)
-            throws Exception {
-        Set<Class<?>> classes = findAnnotatedClassesInPackage(packageName, classesAnnotationClass);
-        Set<SimpleEntry<Method, T>> entries = new HashSet<>();
-
-        for (Class<?> c : classes)
-            entries.addAll(ReflectionUtil.findAnnotatedMethodEntries(c, methodsAnnotationClass));
-
-        return  entries;
+        return  pairs;
     }
 }

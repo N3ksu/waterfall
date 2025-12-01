@@ -1,12 +1,15 @@
-package waterfall.util.parser;
+package waterfall.core.reflection.args;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
 
-public final class StringParser {
-    public static Object parse(String s, Class<?> c) {
+public final class ArgumentParser {
+    public Object parseString(String s, Class<?> c) {
+        if (s == null)
+            return null;
+
         // String
         if (c.equals(String.class))
             return s;

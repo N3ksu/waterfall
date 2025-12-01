@@ -4,22 +4,25 @@ import waterfall.component.annotation.request.mapping.RequestMapping;
 import waterfall.core.route.Route;
 import waterfall.bootstrap.route.RouteBuilder;
 import waterfall.core.router.Router;
+import waterfall.util.tuple.Pair;
 
 import java.lang.reflect.Method;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public final class RouterBuilder {
-    public static Router build(Set<SimpleEntry<Method, RequestMapping>> entries) throws Exception {
-        Set<Route> routes = new HashSet<>();
+    private final RouteBuilder routeBuilder;
 
-        for (SimpleEntry<Method, RequestMapping> entry : entries) {
-            List<Route> routeList = RouteBuilder.build(entry.getKey(), entry.getValue());
-            routes.addAll(routeList);
-        }
+    public RouterBuilder() {
+        routeBuilder = new RouteBuilder();
+    }
 
-        return new Router(routes);
+    public Router build(Set<Pair<Method, RequestMapping>> pairs) throws Exception {
+        Router router = new Router();
+
+        for (Pair<Method, RequestMapping> pair : pairs)
+            for (Route route: routeBuilder.build(pair.getLeft(), pair.getRight()))
+                router.add(route);
+
+        return router;
     }
 }
