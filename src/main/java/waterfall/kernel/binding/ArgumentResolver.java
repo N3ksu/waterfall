@@ -1,4 +1,4 @@
-package waterfall.kernel.reflection.binding;
+package waterfall.kernel.binding;
 
 import jakarta.servlet.http.HttpServletRequest;
 import waterfall.api.annotation.request.RequestParam;
@@ -12,9 +12,11 @@ import java.util.Map;
 
 public final class ArgumentResolver {
     private final StringParser stringParser;
+    private final ModelBinder modelBinder;
 
     public ArgumentResolver() {
         stringParser = new StringParser();
+        modelBinder = new ModelBinder();
     }
 
     public Object[] resolve(Route route, HttpServletRequest req) throws Exception {
@@ -51,7 +53,13 @@ public final class ArgumentResolver {
             } else if (!(dotNotations = req.getParameterMap().keySet().stream()
                     .filter(paramName -> paramName.startsWith(param.getName() + ".")).toList())
                     .isEmpty()) {
+                Object model = ReflectionUtil.newInstanceFromNoArgsConstructor(param.getType());
 
+                for (String dotNotation : dotNotations)
+                    modelBinder.bind(model, dotNotation.split("\\."), 1, req.getParameterValues(dotNotation),0);
+
+                args[i] = model;
+                continue;
             }
             args[i] = null; // TODO provide better default value
         }

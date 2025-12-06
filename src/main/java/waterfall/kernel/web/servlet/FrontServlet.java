@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.constant.WFConstant;
+import waterfall.kernel.constant.WFConstant;
 import waterfall.kernel.dispatcher.WFDispatcher;
 import waterfall.kernel.routing.router.Router;
 

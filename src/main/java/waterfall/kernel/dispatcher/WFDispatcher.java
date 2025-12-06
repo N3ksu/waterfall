@@ -3,7 +3,7 @@ package waterfall.kernel.dispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import waterfall.api.http.HttpMethod;
-import waterfall.kernel.reflection.binding.ArgumentResolver;
+import waterfall.kernel.binding.ArgumentResolver;
 import waterfall.kernel.routing.route.Route;
 import waterfall.kernel.routing.router.Router;
 import waterfall.kernel.reflection.ReflectionUtil;

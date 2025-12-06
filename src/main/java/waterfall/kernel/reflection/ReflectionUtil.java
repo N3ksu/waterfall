@@ -1,6 +1,6 @@
 package waterfall.kernel.reflection;
 
-import waterfall.constant.WFConstant;
+import waterfall.kernel.constant.WFConstant;
 import waterfall.kernel.proxy.MergedAnnotationResolver;
 import waterfall.kernel.util.tuple.Pair;
 

@@ -1,6 +1,6 @@
 package waterfall.kernel.routing.route;
 
-import waterfall.constant.WFConstant;
+import waterfall.kernel.constant.WFConstant;
 import waterfall.kernel.routing.uri.URIType;
 import waterfall.api.annotation.request.mapping.RequestMapping;
 import waterfall.api.http.HttpMethod;

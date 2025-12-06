@@ -4,7 +4,7 @@ import jakarta.servlet.ServletContext;
 import waterfall.kernel.routing.router.RouterBuilder;
 import waterfall.api.annotation.Controller;
 import waterfall.api.annotation.request.mapping.RequestMapping;
-import waterfall.constant.WFConstant;
+import waterfall.kernel.constant.WFConstant;
 import waterfall.kernel.reflection.IOReflectionUtil;
 import waterfall.kernel.util.tuple.Pair;
 

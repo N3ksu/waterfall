@@ -1,4 +1,4 @@
-package waterfall.constant;
+package waterfall.kernel.constant;
 
 public final class WFConstant {
     // Context

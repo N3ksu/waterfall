@@ -1,6 +1,6 @@
 package waterfall.kernel.routing.uri.parser;
 
-import waterfall.constant.WFConstant;
+import waterfall.kernel.constant.WFConstant;
 
 public final class DynamicURIParser implements URIParser {
     @Override
