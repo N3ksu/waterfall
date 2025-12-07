@@ -1,11 +1,13 @@
 package waterfall.kernel.bootstrap;
 
 import jakarta.servlet.ServletContext;
+import waterfall.kernel.constant.ConfigurationConstant;
+import waterfall.kernel.constant.ContextConstant;
 import waterfall.kernel.routing.router.RouterBuilder;
-import waterfall.api.annotation.Controller;
+import waterfall.api.annotation.controller.Controller;
 import waterfall.api.annotation.request.mapping.RequestMapping;
-import waterfall.kernel.constant.WFConstant;
-import waterfall.kernel.reflection.IOReflectionUtil;
+import waterfall.kernel.constant.ReflectionConstant;
+import waterfall.kernel.meta.util.IOReflectionUtil;
 import waterfall.kernel.util.tuple.Pair;
 
 import java.io.InputStream;
@@ -30,7 +32,7 @@ public final class WFBootStrap {
 
     private void bootConfig() throws Exception {
         // TODO What to do if the client doesn't have the properties file
-        InputStream in = ctx.getResourceAsStream(WFConstant.CONFIG_FILE_URI);
+        InputStream in = ctx.getResourceAsStream(ConfigurationConstant.CONFIG_FILE_URI);
         Properties props = new Properties();
         props.load(in);
 
@@ -41,11 +43,11 @@ public final class WFBootStrap {
     }
 
     private void bootRouter() throws Exception {
-        String controllerPackage = (String) ctx.getAttribute(WFConstant.CONTROLLER_PACKAGE_CONF_PARAM_NAME);
+        String controllerPackage = (String) ctx.getAttribute(ConfigurationConstant.CONTROLLER_PACKAGE_CONF_PARAM_NAME);
 
         Set<Pair<Method, RequestMapping>> methodAndAnnotationPairs = IOReflectionUtil
                 .findMethodAndAnnotationPairsInAnnotatedClassesInPackage(controllerPackage, Controller.class, RequestMapping.class);
 
-        ctx.setAttribute(WFConstant.ROUTER_CTX_ATTR_NAME, routerBuilder.build(methodAndAnnotationPairs));
+        ctx.setAttribute(ContextConstant.ROUTER_CTX_ATTR_NAME, routerBuilder.build(methodAndAnnotationPairs));
     }
 }

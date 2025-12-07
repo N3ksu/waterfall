@@ -1,6 +1,7 @@
 package waterfall.kernel.routing.route;
 
-import waterfall.api.http.HttpMethod;
+import waterfall.kernel.routing.http.HttpMethod;
+import waterfall.kernel.routing.media.MediaType;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -13,12 +14,14 @@ public class Route {
     private final HttpMethod httpMethod;
     private final String uri;
     private final Method method;
+    private final MediaType mediaType;
     private final Pattern rgxPattern;
     private final Set<String> pathVarKeys;
 
-    public Route(HttpMethod httpMethod, String uri, Method method, Pattern rgxPattern, Set<String> pathVarKeys) {
+    public Route(HttpMethod httpMethod, String uri, Method method, MediaType mediaType, Pattern rgxPattern, Set<String> pathVarKeys) {
         this.httpMethod = httpMethod;
         this.uri = uri;
+        this.mediaType = mediaType;
         this.rgxPattern = rgxPattern;
         this.method = method;
         this.pathVarKeys = pathVarKeys;
@@ -30,6 +33,10 @@ public class Route {
 
     public Method getMethod() {
         return method;
+    }
+
+    public boolean produces(MediaType mediaType) {
+        return this.mediaType == mediaType;
     }
 
     public Pattern getRgxPattern() {

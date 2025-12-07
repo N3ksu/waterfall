@@ -16,7 +16,7 @@ public enum URIType {
         return parser;
     }
 
-    public static URIType typeOf(String uri) {
+    public static URIType uriTypeOf(String uri) {
         if (uri.contains("{") || uri.contains("}")) return DYNAMIC;
         return STATIC;
     }

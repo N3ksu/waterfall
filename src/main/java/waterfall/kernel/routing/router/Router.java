@@ -1,6 +1,6 @@
 package waterfall.kernel.routing.router;
 
-import waterfall.api.http.HttpMethod;
+import waterfall.kernel.routing.http.HttpMethod;
 import waterfall.kernel.routing.route.Route;
 
 import java.util.HashMap;

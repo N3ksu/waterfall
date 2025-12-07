@@ -1,13 +1,13 @@
 package waterfall.kernel.routing.uri.parser;
 
-import waterfall.kernel.constant.WFConstant;
+import waterfall.kernel.constant.RegexConstant;
 
 public final class DynamicURIParser implements URIParser {
     private final String regex;
     private final String replacement;
 
     public DynamicURIParser() {
-        regex = "\\{(?<i>" + WFConstant.JAVA_VAR_NOMENCLATURE_RGX  + ")}";
+        regex = "\\{(?<i>" + RegexConstant.JAVA_VAR_NOMENCLATURE_RGX  + ")}";
         replacement = "(?<${i}>[^/]+?)";
     }
 
