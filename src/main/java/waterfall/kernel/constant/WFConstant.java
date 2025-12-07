@@ -10,9 +10,11 @@ public final class WFConstant {
 
     // Regex
     public static final String JAVA_VAR_NOMENCLATURE_RGX = "[A-Za-z_$][A-Za-z0-9_$]*";
+    public static final String ARRAY_NOTATION_RGX = "(" + WFConstant.JAVA_VAR_NOMENCLATURE_RGX + ")(?:\\[(\\d+)])?";
 
     // Reflection
-    public static final String SETTER_DEFAULT_PREFIX = "set";
+    public static final String SETTER_PREFIX = "set";
+    public static final String GETTER_PREFIX = "get";
 
     // Web
     public static final String SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME = "default";

@@ -15,10 +15,24 @@ public final class ReflectionUtil {
      */
     public static Method findSetter(Field field) {
         String fieldName = field.getName();
-        String setterName = WFConstant.SETTER_DEFAULT_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
+        String setterName = WFConstant.SETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
         try {
             return field.getDeclaringClass().getDeclaredMethod(setterName, field.getType());
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
+
+    /**
+     * If the getter wasn't defined this method return null
+     */
+    public static Method findGetter(Field field) {
+        String fieldName = field.getName();
+        String getterName = WFConstant.GETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
+
+        try {
+            return field.getDeclaringClass().getDeclaredMethod(getterName);
         } catch (NoSuchMethodException e) {
             return null;
         }

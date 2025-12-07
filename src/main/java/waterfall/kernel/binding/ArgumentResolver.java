@@ -2,21 +2,26 @@ package waterfall.kernel.binding;
 
 import jakarta.servlet.http.HttpServletRequest;
 import waterfall.api.annotation.request.RequestParam;
+import waterfall.kernel.constant.WFConstant;
 import waterfall.kernel.reflection.ReflectionUtil;
 import waterfall.kernel.util.parser.StringParser;
 import waterfall.kernel.routing.route.Route;
+import waterfall.kernel.util.tuple.Pair;
 
 import java.lang.reflect.*;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class ArgumentResolver {
     private final StringParser stringParser;
     private final ModelBinder modelBinder;
+    private final Pattern arrayNotationPattern;
 
     public ArgumentResolver() {
         stringParser = new StringParser();
         modelBinder = new ModelBinder();
+        arrayNotationPattern = Pattern.compile(WFConstant.ARRAY_NOTATION_RGX);
     }
 
     public Object[] resolve(Route route, HttpServletRequest req) throws Exception {
@@ -27,7 +32,6 @@ public final class ArgumentResolver {
 
         String pathVarValue;
         String[] paramStrValues;
-        List<String> dotNotations;
 
         for (int i = 0; i < params.length; i++) {
             Parameter param = params[i];
@@ -48,23 +52,41 @@ public final class ArgumentResolver {
                     args[i] = paramStrValues.length > 0 ?
                             stringParser.parseString(paramStrValues[0], paramType) :
                             null; // TODO provide better default value
-
                 continue;
-            } else if (!(dotNotations = req.getParameterMap().keySet().stream()
-                    .filter(paramName -> paramName.startsWith(param.getName() + ".")).toList())
-                    .isEmpty()) {
-                Object model = ReflectionUtil.newInstanceFromNoArgsConstructor(param.getType());
+            } else {
+                Type parameterizedType = param.getParameterizedType();
 
-                for (String dotNotation : dotNotations)
-                    modelBinder.bind(model, dotNotation.split("\\."), 1, req.getParameterValues(dotNotation),0);
+                if (parameterizedType instanceof Class<?> clazz)
+                    if (!clazz.isArray()) {
+                        List<String> dotNotations = findDotNotations(req, param);
 
-                args[i] = model;
-                continue;
+                        Object model = ReflectionUtil.newInstanceFromNoArgsConstructor(param.getType());
+
+                        for (String dotNotation : dotNotations)
+                            modelBinder.bind(model, dotNotation.split("\\."), 1, req.getParameter(dotNotation));
+
+                        args[i] = model;
+                        continue;
+                    } else {
+
+                    }
             }
             args[i] = null; // TODO provide better default value
         }
 
         return args;
+    }
+
+    public List<String> findDotNotations(HttpServletRequest req, Parameter param) {
+        return req.getParameterMap()
+                .keySet()
+                .stream()
+                .filter(s -> s.startsWith(param.getName() + "."))
+                .toList();
+    }
+
+    public List<Pair<String, Integer>> findDotArrayNotations(HttpServletRequest req ,Parameter param) {
+        return null;
     }
     
     private String getRequestParameterName(Parameter param) {

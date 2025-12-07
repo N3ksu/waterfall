@@ -1,4 +1,4 @@
-package waterfall.kernel.dispatcher.destination;
+package waterfall.kernel.destination;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

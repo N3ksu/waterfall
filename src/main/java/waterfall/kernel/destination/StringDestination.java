@@ -1,4 +1,4 @@
-package waterfall.kernel.dispatcher.destination;
+package waterfall.kernel.destination;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,7 +7,7 @@ import waterfall.kernel.routing.route.Route;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
-public class VoidDestination implements Destination {
+public class StringDestination implements Destination {
     @Override
     public void forward(Route route, Object[] args, Object controller, HttpServletRequest req, HttpServletResponse res)
             throws Exception {
@@ -16,10 +16,10 @@ public class VoidDestination implements Destination {
         Method method = route.getMethod();
         method.setAccessible(true);
 
-        method.invoke(controller, args);
+        String actionResult = (String) method.invoke(controller, args);
 
         res.setContentType("text/plain;charset=UTF-8");
-        out.print("200 Invoke (void): " + method.getName());
+        out.print(actionResult);
 
         out.close();
     }

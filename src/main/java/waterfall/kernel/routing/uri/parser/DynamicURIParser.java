@@ -3,6 +3,14 @@ package waterfall.kernel.routing.uri.parser;
 import waterfall.kernel.constant.WFConstant;
 
 public final class DynamicURIParser implements URIParser {
+    private final String regex;
+    private final String replacement;
+
+    public DynamicURIParser() {
+        regex = "\\{(?<i>" + WFConstant.JAVA_VAR_NOMENCLATURE_RGX  + ")}";
+        replacement = "(?<${i}>[^/]+?)";
+    }
+
     @Override
     public String parse(String uri) throws Exception {
         long openingBracesCount = uri.chars().filter(c -> c == '{').count();
@@ -10,9 +18,6 @@ public final class DynamicURIParser implements URIParser {
 
         if (openingBracesCount != closingBracesCount)
             throw new Exception("Malformed URI" + uri);
-
-        String regex = "\\{(?<i>" + WFConstant.JAVA_VAR_NOMENCLATURE_RGX  + ")}";
-        String replacement = "(?<${i}>[^/]+?)";
 
         return "^" + uri.replaceAll(regex, replacement) + "$";
     }

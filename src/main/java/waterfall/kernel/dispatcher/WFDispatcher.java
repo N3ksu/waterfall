@@ -8,7 +8,7 @@ import waterfall.kernel.routing.route.Route;
 import waterfall.kernel.routing.router.Router;
 import waterfall.kernel.reflection.ReflectionUtil;
 import waterfall.api.ui.ModelView;
-import waterfall.kernel.dispatcher.destination.Destination;
+import waterfall.kernel.destination.Destination;
 
 public final class WFDispatcher {
     private final Router router;
@@ -47,3 +47,4 @@ public final class WFDispatcher {
         return router.findRoute(httpMethod, path);
     }
 }
+
