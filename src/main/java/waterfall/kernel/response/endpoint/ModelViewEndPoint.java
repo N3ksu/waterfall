@@ -1,4 +1,4 @@
-package waterfall.kernel.routing.endpoint;
+package waterfall.kernel.response.endpoint;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,11 +11,11 @@ import java.util.Map.Entry;
 
 public final class ModelViewEndPoint implements EndPoint {
     @Override
-    public void forward(HttpServletRequest req, HttpServletResponse res, Route route, Object controller, Object[] args)
+    public void forward(final HttpServletRequest req, final HttpServletResponse res, final Route route, final Object controller, final Object[] args)
             throws Exception {
-        Method method = route.getMethod();
-        ModelView modelView = (ModelView) method.invoke(controller, args);
-        RequestDispatcher reqDispatcher = req.getRequestDispatcher(modelView.getView());
+        final Method method = route.getAction();
+        final ModelView modelView = (ModelView) method.invoke(controller, args);
+        final RequestDispatcher reqDispatcher = req.getRequestDispatcher(modelView.getView());
 
         if (reqDispatcher == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND,
@@ -23,7 +23,7 @@ public final class ModelViewEndPoint implements EndPoint {
             return;
         }
 
-        for (Entry<String, Object> entry : modelView.getAttributes().entrySet())
+        for (final Entry<String, Object> entry : modelView.getAttributes().entrySet())
             req.setAttribute(entry.getKey(), entry.getValue());
 
         reqDispatcher.forward(req, res);

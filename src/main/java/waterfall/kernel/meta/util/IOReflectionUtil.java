@@ -9,50 +9,47 @@ import java.net.URL;
 import java.util.*;
 
 public final class IOReflectionUtil {
-    public static Set<Class<?>> findAnnotatedClassesInPackage(
-            String packageName, Class<? extends Annotation> annotationClass)
+    public static Set<Class<?>> findAnnotatedClasses
+            (final String packageName, final Class<? extends Annotation> annotation)
             throws Exception {
+        final String path = packageName.replace(".", "/");
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        final Enumeration<URL> resources = loader.getResources(path);
 
-        String path = packageName.replace(".", "/");
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        Enumeration<URL> resources = loader.getResources(path);
-
-        Set<Class<?>> classes = new HashSet<>();
+        final Set<Class<?>> classes = new HashSet<>();
 
         while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            File directory = new File(resource.toURI());
+            final URL resource = resources.nextElement();
+            final File directory = new File(resource.toURI());
 
             if (directory.exists() && directory.isDirectory())
-                findAndRetrieveAnnotatedClassesInDirectory(directory, packageName, classes, annotationClass);
+                findAndRetrieveAnnotatedClasses(directory, packageName, classes, annotation);
         }
 
         return classes;
     }
 
-    private static void findAndRetrieveAnnotatedClassesInDirectory(
-            File directory, String packageName, Set<Class<?>> classes, Class<? extends Annotation> annotationClass)
+    private static void findAndRetrieveAnnotatedClasses
+            (final File dir, final String packageName, final Set<Class<?>> classes, final Class<? extends Annotation> annotation)
             throws Exception {
-
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
+        for (final File file : Objects.requireNonNull(dir.listFiles())) {
             if (file.isDirectory())
-                findAndRetrieveAnnotatedClassesInDirectory(file, packageName  + "." + file.getName(), classes, annotationClass);
+                findAndRetrieveAnnotatedClasses(file, packageName  + "." + file.getName(), classes, annotation);
 
             else if (file.getName().endsWith(".class")) {
                 String className = packageName + "." + file.getName().replace(".class", "");
                 Class<?> clazz = Class.forName(className);
 
-                if(clazz.isAnnotationPresent(annotationClass))
+                if(clazz.isAnnotationPresent(annotation))
                     classes.add(clazz);
             }
         }
     }
 
-    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairsInAnnotatedClassesInPackage(
-            String packageName, Class<? extends Annotation> classesAnnotationClass, Class<T> methodsAnnotationClass)
+    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairs
+            (String packageName, Class<? extends Annotation> classesAnnotationClass, Class<T> methodsAnnotationClass)
             throws Exception {
-
-        Set<Class<?>> classes = findAnnotatedClassesInPackage(packageName, classesAnnotationClass);
+        Set<Class<?>> classes = findAnnotatedClasses(packageName, classesAnnotationClass);
         Set<Pair<Method, T>> pairs = new HashSet<>();
 
         for (Class<?> c : classes)

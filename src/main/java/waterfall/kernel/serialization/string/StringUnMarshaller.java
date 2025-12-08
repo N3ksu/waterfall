@@ -1,4 +1,4 @@
-package waterfall.kernel.util.string;
+package waterfall.kernel.serialization.string;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -7,35 +7,31 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.Set;
 
-public final class StringToObjectConverter {
-    private final Set<Class<?>> convertibleClasses;
+public final class StringUnMarshaller {
+    private static final Set<Class<?>> SUPPORTED_CLASSES_SET = Set.of(
+            String.class,
+            int.class, long.class, double.class, float.class,
+            Integer.class, Long.class, Double.class, Float.class,
+            LocalDate.class, LocalTime.class, LocalDateTime.class, YearMonth.class);
 
-    public StringToObjectConverter() {
-        convertibleClasses = Set
-                .of(String.class,
-                int.class, long.class, double.class, float.class,
-                Integer.class, Long.class, Double.class, Float.class,
-                LocalDate.class, LocalTime.class, LocalDateTime.class, YearMonth.class);
+    public static boolean isSupported(final Class<?> c) {
+        return SUPPORTED_CLASSES_SET.contains(c);
     }
 
-    public boolean isConvertible(Class<?> c) {
-        return convertibleClasses.contains(c);
-    }
-
-    public Object convert(String[] s, Class<?> c) {
+    public static Object unMarshal(final String[] s, final Class<?> c) {
         if (c == null) return null;
 
-        Object array = Array.newInstance(c, s.length);
+        final Object array = Array.newInstance(c, s.length);
 
-        if (!isConvertible(c)) return array;
+        if (!isSupported(c)) return array;
 
         for (int i = 0; i < s.length; i++)
-            Array.set(array, i, convert(s[i], c));
+            Array.set(array, i, unMarshal(s[i], c));
 
         return array;
     }
 
-    public Object convert(String s, Class<?> c) {
+    public static Object unMarshal(final String s, final Class<?> c) {
         if (s == null) return null;
 
         Object o = null;

@@ -1,6 +1,6 @@
 package waterfall.api.annotation.request.mapping;
 
-import waterfall.kernel.routing.http.HttpMethod;
+import waterfall.kernel.routing.http.method.HttpMethod;
 import waterfall.kernel.meta.annotation.Extends;
 
 import java.lang.annotation.ElementType;

@@ -1,11 +1,11 @@
-package waterfall.kernel.routing.http;
+package waterfall.kernel.routing.http.method;
 
 public enum HttpMethod {
     GET,
     POST,
     UNKNOWN;
 
-    public static HttpMethod httpMethodOf(String method) {
+    public static HttpMethod httpMethodOf(final String method) {
         if ("GET".equals(method))
             return GET;
 

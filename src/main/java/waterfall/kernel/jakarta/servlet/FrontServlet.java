@@ -7,46 +7,41 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import waterfall.kernel.constant.ContextConstant;
-import waterfall.kernel.constant.JakartaConstant;
-import waterfall.kernel.constant.ReflectionConstant;
-import waterfall.kernel.routing.dispatcher.WFDispatcher;
+import waterfall.kernel.constant.Constant;
+import waterfall.kernel.request.dispatcher.Dispatcher;
 import waterfall.kernel.routing.router.Router;
 
 import java.io.IOException;
 
-@WebServlet(JakartaConstant.FRONT_SERVLET_URL_MAPPING)
+@WebServlet(Constant.Jakarta.FRONT_SERVLET_URL_MAPPING)
 public final class FrontServlet extends HttpServlet {
     private RequestDispatcher ctxDefaultDispatcher;
-    private WFDispatcher WFDispatcher;
+    private Dispatcher waterFallDispatcher;
 
     @Override
     public void init()
             throws ServletException {
-        ctxDefaultDispatcher = getServletContext()
-                .getNamedDispatcher(JakartaConstant.SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME);
+        ctxDefaultDispatcher = getServletContext().getNamedDispatcher(Constant.Jakarta.SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
-        if (ctxDefaultDispatcher == null)
-            throw new ServletException("The context's default dispatcher cannot be found");
+        if (ctxDefaultDispatcher == null) throw new ServletException("The context's default dispatcher cannot be found");
 
-        Router router = (Router) getServletContext()
-                .getAttribute(ContextConstant.ROUTER_CTX_ATTR_NAME);
+        final Router router = (Router) getServletContext()
+                .getAttribute(Constant.Context.ROUTER_CTX_ATTR_NAME);
 
-        WFDispatcher = new WFDispatcher(router);
+        waterFallDispatcher = new Dispatcher(router);
     }
 
     @Override
-    public void service(HttpServletRequest req, HttpServletResponse res)
+    public void service(final HttpServletRequest req, final HttpServletResponse res)
             throws ServletException, IOException {
-        String path = req.getServletPath();
+        final String path = req.getServletPath();
 
-        if (getServletContext().getResource(path) != null)
-            ctxDefaultDispatcher.forward(req, res);
+        if (getServletContext().getResource(path) != null) ctxDefaultDispatcher.forward(req, res);
 
         else {
             try {
-                WFDispatcher.forward(req, res);
-            } catch (Exception e) {
+                waterFallDispatcher.forward(req, res);
+            } catch (final Exception e) {
                 throw new ServletException(e);
             }
         }
