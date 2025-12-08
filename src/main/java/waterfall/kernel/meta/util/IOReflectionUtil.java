@@ -10,17 +10,17 @@ import java.util.*;
 
 public final class IOReflectionUtil {
     public static Set<Class<?>> findAnnotatedClasses
-            (final String packageName, final Class<? extends Annotation> annotation)
+            (String packageName, Class<? extends Annotation> annotation)
             throws Exception {
-        final String path = packageName.replace(".", "/");
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        final Enumeration<URL> resources = loader.getResources(path);
+        String path = packageName.replace(".", "/");
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Enumeration<URL> resources = loader.getResources(path);
 
-        final Set<Class<?>> classes = new HashSet<>();
+        Set<Class<?>> classes = new HashSet<>();
 
         while (resources.hasMoreElements()) {
-            final URL resource = resources.nextElement();
-            final File directory = new File(resource.toURI());
+            URL resource = resources.nextElement();
+            File directory = new File(resource.toURI());
 
             if (directory.exists() && directory.isDirectory())
                 findAndRetrieveAnnotatedClasses(directory, packageName, classes, annotation);
@@ -30,9 +30,9 @@ public final class IOReflectionUtil {
     }
 
     private static void findAndRetrieveAnnotatedClasses
-            (final File dir, final String packageName, final Set<Class<?>> classes, final Class<? extends Annotation> annotation)
+            (File dir, String packageName, Set<Class<?>> classes, Class<? extends Annotation> annotation)
             throws Exception {
-        for (final File file : Objects.requireNonNull(dir.listFiles())) {
+        for (File file : Objects.requireNonNull(dir.listFiles())) {
             if (file.isDirectory())
                 findAndRetrieveAnnotatedClasses(file, packageName  + "." + file.getName(), classes, annotation);
 

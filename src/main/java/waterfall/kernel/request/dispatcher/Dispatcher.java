@@ -15,21 +15,21 @@ public final class Dispatcher {
     private final Router router;
     private final RouteArgumentResolver routeArgumentResolver;
 
-    public Dispatcher(final Router router) {
+    public Dispatcher(Router router) {
         this.router = router;
         routeArgumentResolver = new RouteArgumentResolver();
     }
 
-    public void forward(final HttpServletRequest req, final HttpServletResponse res) throws Exception {
+    public void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
         Route route;
         if ((route = findRoute(req)) == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND, req.getServletPath());
             return;
         }
 
-        final Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(route.getAction().getDeclaringClass());
-        final Object[] args = routeArgumentResolver.resolve(route, req);
-        final Class<?> returnType = route.getAction().getReturnType();
+        Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(route.getAction().getDeclaringClass());
+        Object[] args = routeArgumentResolver.resolve(route, req);
+        Class<?> returnType = route.getAction().getReturnType();
 
         if (ModelView.class.equals(returnType)) {
             EndPoint.MV.forward(req, res, route, controller, args);
@@ -38,9 +38,9 @@ public final class Dispatcher {
         }
     }
 
-    private Route findRoute(final HttpServletRequest req) {
-        final HttpMethod httpMethod = HttpMethod.httpMethodOf(req.getMethod());
-        final String path = req.getServletPath();
+    private Route findRoute(HttpServletRequest req) {
+        HttpMethod httpMethod = HttpMethod.httpMethodOf(req.getMethod());
+        String path = req.getServletPath();
         return router.findRoute(httpMethod, path);
     }
 }

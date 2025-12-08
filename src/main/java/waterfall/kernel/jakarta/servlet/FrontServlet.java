@@ -25,23 +25,23 @@ public final class FrontServlet extends HttpServlet {
 
         if (ctxDefaultDispatcher == null) throw new ServletException("The context's default dispatcher cannot be found");
 
-        final Router router = (Router) getServletContext()
+        Router router = (Router) getServletContext()
                 .getAttribute(Constant.Context.ROUTER_CTX_ATTR_NAME);
 
         waterFallDispatcher = new Dispatcher(router);
     }
 
     @Override
-    public void service(final HttpServletRequest req, final HttpServletResponse res)
+    public void service(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        final String path = req.getServletPath();
+        String path = req.getServletPath();
 
         if (getServletContext().getResource(path) != null) ctxDefaultDispatcher.forward(req, res);
 
         else {
             try {
                 waterFallDispatcher.forward(req, res);
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 throw new ServletException(e);
             }
         }

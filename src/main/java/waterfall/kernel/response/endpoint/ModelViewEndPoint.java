@@ -11,11 +11,11 @@ import java.util.Map.Entry;
 
 public final class ModelViewEndPoint implements EndPoint {
     @Override
-    public void forward(final HttpServletRequest req, final HttpServletResponse res, final Route route, final Object controller, final Object[] args)
+    public void forward(HttpServletRequest req, HttpServletResponse res, Route route, Object controller, Object[] args)
             throws Exception {
-        final Method method = route.getAction();
-        final ModelView modelView = (ModelView) method.invoke(controller, args);
-        final RequestDispatcher reqDispatcher = req.getRequestDispatcher(modelView.getView());
+        Method method = route.getAction();
+        ModelView modelView = (ModelView) method.invoke(controller, args);
+        RequestDispatcher reqDispatcher = req.getRequestDispatcher(modelView.getView());
 
         if (reqDispatcher == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND,
@@ -23,7 +23,7 @@ public final class ModelViewEndPoint implements EndPoint {
             return;
         }
 
-        for (final Entry<String, Object> entry : modelView.getAttributes().entrySet())
+        for (Entry<String, Object> entry : modelView.getAttributes().entrySet())
             req.setAttribute(entry.getKey(), entry.getValue());
 
         reqDispatcher.forward(req, res);

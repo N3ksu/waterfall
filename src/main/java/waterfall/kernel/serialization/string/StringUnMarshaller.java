@@ -14,14 +14,14 @@ public final class StringUnMarshaller {
             Integer.class, Long.class, Double.class, Float.class,
             LocalDate.class, LocalTime.class, LocalDateTime.class, YearMonth.class);
 
-    public static boolean isSupported(final Class<?> c) {
+    public static boolean isSupported(Class<?> c) {
         return SUPPORTED_CLASSES_SET.contains(c);
     }
 
-    public static Object unMarshal(final String[] s, final Class<?> c) {
+    public static Object unMarshal(String[] s, Class<?> c) {
         if (c == null) return null;
 
-        final Object array = Array.newInstance(c, s.length);
+        Object array = Array.newInstance(c, s.length);
 
         if (!isSupported(c)) return array;
 
@@ -31,7 +31,7 @@ public final class StringUnMarshaller {
         return array;
     }
 
-    public static Object unMarshal(final String s, final Class<?> c) {
+    public static Object unMarshal(String s, Class<?> c) {
         if (s == null) return null;
 
         Object o = null;

@@ -10,16 +10,16 @@ import java.lang.reflect.Method;
 
 public final class JsonEndPoint implements EndPoint {
     @Override
-    public void forward(final HttpServletRequest req, final HttpServletResponse res, final Route route, final Object controller, final Object[] args) throws Exception {
+    public void forward(HttpServletRequest req, HttpServletResponse res, Route route, Object controller, Object[] args) throws Exception {
         res.setContentType("application/json;charset=UTF-8");
 
         try {
-            final Method method = route.getAction();
-            final Object actionResult = method.invoke(controller, args);
-            final PrintWriter out = res.getWriter();
+            Method method = route.getAction();
+            Object actionResult = method.invoke(controller, args);
+            PrintWriter out = res.getWriter();
             out.print(JsonResponse.ok(actionResult).json());
-        } catch (final Exception e) {
-            final PrintWriter out = res.getWriter();
+        } catch (Exception e) {
+            PrintWriter out = res.getWriter();
             out.print(JsonResponse.err(e).json());
         }
     }

@@ -5,7 +5,7 @@ public enum HttpMethod {
     POST,
     UNKNOWN;
 
-    public static HttpMethod httpMethodOf(final String method) {
+    public static HttpMethod httpMethodOf(String method) {
         if ("GET".equals(method))
             return GET;
 

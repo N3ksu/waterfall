@@ -8,5 +8,5 @@ public interface EndPoint {
     EndPoint MV = new ModelViewEndPoint();
     EndPoint JSON = new JsonEndPoint();
 
-    void forward(final HttpServletRequest req, final HttpServletResponse res, final Route route, final Object controller, final Object[] args) throws Exception;
+    void forward(HttpServletRequest req, HttpServletResponse res, Route route, Object controller, Object[] args) throws Exception;
 }

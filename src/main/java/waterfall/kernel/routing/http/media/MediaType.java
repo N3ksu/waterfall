@@ -8,9 +8,8 @@ public enum MediaType {
     JSP,
     APPLICATION_JSON;
 
-    public static MediaType mediaTypeOf(final Method m) {
-        if (m.isAnnotationPresent(Json.class))
-            return APPLICATION_JSON;
+    public static MediaType mediaTypeOf(Method m) {
+        if (m.isAnnotationPresent(Json.class)) return APPLICATION_JSON;
         return JSP;
     }
 }

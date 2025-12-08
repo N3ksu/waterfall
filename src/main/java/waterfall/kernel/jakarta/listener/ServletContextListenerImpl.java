@@ -8,10 +8,10 @@ import waterfall.kernel.bootstrap.BootStrap;
 @WebListener
 public final class ServletContextListenerImpl implements ServletContextListener {
     @Override
-    public void contextInitialized(final ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent sce) {
         try {
             (new BootStrap(sce.getServletContext())).bootstrap();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
             System.err.flush();
             throw new RuntimeException(e);

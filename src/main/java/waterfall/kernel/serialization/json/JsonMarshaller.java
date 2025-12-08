@@ -22,23 +22,23 @@ public final class JsonMarshaller {
             Integer.class, Long.class, Double.class, Float.class,
             LocalDate.class, LocalTime.class, LocalDateTime.class, YearMonth.class);
 
-    public static String marshal(final Object o) {
-        final StringBuilder json = new StringBuilder();
+    public static String marshal(Object o) {
+        StringBuilder json = new StringBuilder();
         marshalAndAppend(o, json);
         return json.toString();
     }
 
-    private static boolean isScalar(final Class<?> c) {
+    private static boolean isScalar(Class<?> c) {
         return SCALAR_CLASSES_SET.contains(c);
     }
 
-    private static void marshalAndAppend(final Object o, final StringBuilder b) {
+    private static void marshalAndAppend(Object o, StringBuilder b) {
         if (o == null) {
             b.append("null");
             return;
         }
 
-        final Class<?> c = o.getClass();
+        Class<?> c = o.getClass();
 
         if (isScalar(c)) marshalAndAppendScalar(o, b);
         else if (c.isArray()) marshalAndAppendArray(o, b);
@@ -48,14 +48,14 @@ public final class JsonMarshaller {
     }
 
     private static void marshalAndAppendObject(Object o, StringBuilder b) {
-        final Class<?> c = o.getClass();
+        Class<?> c = o.getClass();
 
         b.append("{");
         boolean first = true;
 
-        for (final Field field : c.getDeclaredFields()) {
-            final String fieldName = field.getName();
-            final Method getter = ReflectionUtil.findGetter(field);
+        for (Field field : c.getDeclaredFields()) {
+            String fieldName = field.getName();
+            Method getter = ReflectionUtil.findGetter(field);
 
             if (getter != null) {
                 try {
@@ -72,16 +72,16 @@ public final class JsonMarshaller {
         b.append("}");
     }
 
-    private static void marshalAndAppendScalar(final Object s, final StringBuilder b) {
-        final Class<?> c = s.getClass();
+    private static void marshalAndAppendScalar(Object s, StringBuilder b) {
+        Class<?> c = s.getClass();
 
         if (Boolean.class.equals(c)) b.append(s);
         else if (Number.class.isAssignableFrom(c)) b.append(s);
         else b.append(quote(s.toString()));
     }
 
-    private static void marshalAndAppendMap(final Object m, final StringBuilder b) {
-        final Map<?, ?> map = (Map<?, ?>) m;
+    private static void marshalAndAppendMap(Object m, StringBuilder b) {
+        Map<?, ?> map = (Map<?, ?>) m;
 
         b.append("{");
         boolean first = true;
@@ -96,8 +96,8 @@ public final class JsonMarshaller {
         b.append("}");
     }
 
-    private static void marshalAndAppendCollection(final Object c, final StringBuilder b) {
-        final Collection<?> collection = (Collection<?>) c;
+    private static void marshalAndAppendCollection(Object c, StringBuilder b) {
+        Collection<?> collection = (Collection<?>) c;
 
         b.append("[");
         boolean first = true;
@@ -109,8 +109,8 @@ public final class JsonMarshaller {
         b.append("]");
     }
 
-    private static void marshalAndAppendArray(final Object a, final StringBuilder b) {
-        final int length = Array.getLength(a);
+    private static void marshalAndAppendArray(Object a, StringBuilder b) {
+        int length = Array.getLength(a);
 
         b.append("[");
         boolean first = true;
@@ -122,7 +122,7 @@ public final class JsonMarshaller {
         b.append("]");
     }
 
-    private static String quote(final String s) {
+    private static String quote(String s) {
         return "\"" + s + "\"";
     }
 }

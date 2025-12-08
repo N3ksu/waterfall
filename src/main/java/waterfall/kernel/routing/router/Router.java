@@ -18,11 +18,11 @@ public class Router {
                 .forEach(httpMethod -> routes.put(httpMethod, new HashSet<>()));
     }
 
-    public void add(final Route route) {
+    public void add(Route route) {
         routes.get(route.getHttpMethod()).add(route);
     }
 
-    public Route findRoute(final HttpMethod httpMethod, final String uri) {
+    public Route findRoute(HttpMethod httpMethod, String uri) {
         for (Route route: routes.get(httpMethod))
             if (route.getRgxPattern().matcher(uri).matches()) return route;
 
@@ -30,8 +30,8 @@ public class Router {
     }
 
     public static final class Builder {
-        public static Router build(final Set<Pair<Method, RequestMapping>> pairs) throws Exception {
-            final Router router = new Router();
+        public static Router build(Set<Pair<Method, RequestMapping>> pairs) throws Exception {
+            Router router = new Router();
 
             for (Pair<Method, RequestMapping> pair : pairs)
                 for (Route route: Route.Builder.build(pair.getLeft(), pair.getRight()))

@@ -13,13 +13,13 @@ public final class ReflectionUtil {
     /**
      * If the setter wasn't defined this method return null
      */
-    public static Method findSetter(final Field field) {
-        final String fieldName = field.getName();
-        final String setterName = Constant.Reflection.SETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
+    public static Method findSetter(Field field) {
+        String fieldName = field.getName();
+        String setterName = Constant.Reflection.SETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
         try {
             return field.getDeclaringClass().getDeclaredMethod(setterName, field.getType());
-        } catch (final NoSuchMethodException ignored) {
+        } catch (NoSuchMethodException ignored) {
             return null;
         }
     }
@@ -27,29 +27,29 @@ public final class ReflectionUtil {
     /**
      * If the getter wasn't defined this method return null
      */
-    public static Method findGetter(final Field field) {
-        final Class<?> fieldType = field.getType();
-        final String fieldName = field.getName();
+    public static Method findGetter(Field field) {
+        Class<?> fieldType = field.getType();
+        String fieldName = field.getName();
 
         String prefix = Constant.Reflection.GETTER_PREFIX;
 
         if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) prefix = Constant.Reflection.BOOLEAN_GETTER_PREFIX;
 
-        final String getterName = prefix + Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
+        String getterName = prefix + Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
         try {
             return field.getDeclaringClass().getDeclaredMethod(getterName);
-        } catch (final NoSuchMethodException ignored) {
+        } catch (NoSuchMethodException ignored) {
             return null;
         }
     }
 
-    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairs(final Class<?> c, final Class<T> a)
+    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairs(Class<?> c, Class<T> a)
             throws Exception {
-        final Set<Pair<Method, T>> pairs = new HashSet<>();
+        Set<Pair<Method, T>> pairs = new HashSet<>();
 
         T annotation;
-        for (final Method method : c.getDeclaredMethods())
+        for (Method method : c.getDeclaredMethods())
             if ((annotation = MergedAnnotationResolver.findAnnotation(method, a)) != null)
                 pairs.add(Pair.of(method, annotation));
 
@@ -59,9 +59,9 @@ public final class ReflectionUtil {
     /**
      * The no args constructor should be public
      */
-    public static Object newInstanceFromNoArgsConstructor(final Class<?> c)
+    public static Object newInstanceFromNoArgsConstructor(Class<?> c)
             throws Exception {
-        final Constructor<?> ctr = c.getDeclaredConstructor();
+        Constructor<?> ctr = c.getDeclaredConstructor();
         return ctr.newInstance();
     }
 }

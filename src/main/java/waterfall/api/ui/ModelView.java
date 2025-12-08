@@ -15,12 +15,12 @@ public class ModelView {
         return view;
     }
 
-    public ModelView setView(final String view) {
+    public ModelView setView(String view) {
         this.view = view;
         return this;
     }
 
-    public ModelView setAttribute(final String attr, final Object value) {
+    public ModelView setAttribute(String attr, Object value) {
         attributes.put(attr, value);
         return this;
     }

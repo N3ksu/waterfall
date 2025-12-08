@@ -6,7 +6,7 @@ public final class UriRegexConverter {
     private static final String DYNAMIC_RGX = "\\{(?<i>" + Constant.Regex.JAVA_VAR_NOMENCLATURE_RGX  + ")}";
     private static final String DYNAMIC_REPLACEMENT = "(?<${i}>[^/]+?)";
 
-    public static String convert(final String uri) throws Exception {
+    public static String convert(String uri) throws Exception {
         if (uri == null) return null;
 
         if (uri.contains("{") || uri.contains("}")) {

@@ -19,7 +19,7 @@ public class Route {
     private final Pattern rgxPattern;
     private final Set<String> pathVarKeys;
 
-    private Route(final HttpMethod httpMethod, final String uri, final Method action, final MediaType mediaType, final Pattern rgxPattern, final Set<String> pathVarKeys) {
+    private Route(HttpMethod httpMethod, String uri, Method action, MediaType mediaType, Pattern rgxPattern, Set<String> pathVarKeys) {
         this.httpMethod = httpMethod;
         this.uri = uri;
         this.mediaType = mediaType;
@@ -36,7 +36,7 @@ public class Route {
         return action;
     }
 
-    public boolean produces(final MediaType mediaType) {
+    public boolean produces(MediaType mediaType) {
         return this.mediaType == mediaType;
     }
 
@@ -44,12 +44,12 @@ public class Route {
         return rgxPattern;
     }
 
-    public Map<String, String> getPathVariables(final String uri) throws Exception {
-        final Matcher uriMatcher = rgxPattern.matcher(uri);
+    public Map<String, String> getPathVariables(String uri) throws Exception {
+        Matcher uriMatcher = rgxPattern.matcher(uri);
 
         if (!uriMatcher.matches()) throw new Exception(uri + " doesn't match with " + this.uri);
 
-        final Map<String, String> pathVariables = new HashMap<>();
+        Map<String, String> pathVariables = new HashMap<>();
         for (String key : pathVarKeys) {
             String value = uriMatcher.group(key);
             pathVariables.put(key, value);
@@ -59,21 +59,21 @@ public class Route {
     }
 
     public static final class Builder {
-        public static Route[] build(final Method method, final RequestMapping requestMapping) throws Exception {
+        public static Route[] build(Method method, RequestMapping requestMapping) throws Exception {
             Objects.requireNonNull(method, "Cannot build a Route from a method null");
             Objects.requireNonNull(requestMapping, "Cannot build a Route from a requestMapping null");
 
-            final String uri = requestMapping.value();
-            final String rgxUri = UriRegexConverter.convert(uri);
+            String uri = requestMapping.value();
+            String rgxUri = UriRegexConverter.convert(uri);
 
-            final Set<String> pathVarKeys = new HashSet<>();
-            final Matcher groupFinder = Constant.Regex.ROUTE_GRP_PATTERN.matcher(rgxUri);
+            Set<String> pathVarKeys = new HashSet<>();
+            Matcher groupFinder = Constant.Regex.ROUTE_GRP_PATTERN.matcher(rgxUri);
 
             while (groupFinder.find())
                 pathVarKeys.add(groupFinder.group(1));
 
-            final HttpMethod[] httpMethods = requestMapping.method();
-            final Route[] routes = new Route[httpMethods.length];
+            HttpMethod[] httpMethods = requestMapping.method();
+            Route[] routes = new Route[httpMethods.length];
 
             for (int i = 0; i < httpMethods.length; i++)
                 routes[i] = new Route(httpMethods[i], uri, method, MediaType.mediaTypeOf(method), Pattern.compile(rgxUri), pathVarKeys);

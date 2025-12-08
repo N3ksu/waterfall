@@ -12,17 +12,17 @@ import java.util.List;
 import java.util.Map;
 
 public final class RouteArgumentResolver {
-    public Object[] resolve(final Route route, final HttpServletRequest req) throws Exception {
-        final Parameter[] params = route.getAction().getParameters();
-        final Object[] args = new Object[params.length];
+    public Object[] resolve(Route route, HttpServletRequest req) throws Exception {
+        Parameter[] params = route.getAction().getParameters();
+        Object[] args = new Object[params.length];
 
-        final Map<String, String> pathVars =  route.getPathVariables(req.getServletPath());
+        Map<String, String> pathVars =  route.getPathVariables(req.getServletPath());
 
         String pathVarValue;
         String[] paramStrValues;
 
         for (int i = 0; i < params.length; i++) {
-            final Parameter param = params[i];
+            Parameter param = params[i];
 
             if (isParamMapStringStringArray(param)) {
                 args[i] = req.getParameterMap();
@@ -32,7 +32,7 @@ public final class RouteArgumentResolver {
                 args[i] = StringUnMarshaller.unMarshal(pathVarValue, param.getType());
                 continue;
             } else if ((paramStrValues = req.getParameterValues(getRequestParameterName(param))) != null) {
-                final Class<?> paramType = param.getType();
+                Class<?> paramType = param.getType();
 
                 if (paramType.isArray()) args[i] = StringUnMarshaller.unMarshal(paramStrValues, paramType.getComponentType());
                 else args[i] = paramStrValues.length > 0 ?
@@ -40,12 +40,12 @@ public final class RouteArgumentResolver {
                             null; // TODO provide better default value
                 continue;
             } else {
-                final Type parameterizedType = param.getParameterizedType();
+                Type parameterizedType = param.getParameterizedType();
 
                 if (parameterizedType instanceof Class<?> clazz)
                     if (!clazz.isArray()) {
-                        final List<String> dotNotations = findDotNotations(req, param);
-                        final Object model = ReflectionUtil.newInstanceFromNoArgsConstructor(param.getType());
+                        List<String> dotNotations = findDotNotations(req, param);
+                        Object model = ReflectionUtil.newInstanceFromNoArgsConstructor(param.getType());
 
                         for (String dotNotation : dotNotations)
                             RouteModelBinder.bind(model, dotNotation.split("\\."), 1, req.getParameter(dotNotation));
