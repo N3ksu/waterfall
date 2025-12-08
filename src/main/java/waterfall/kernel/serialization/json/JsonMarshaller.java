@@ -20,7 +20,7 @@ public final class JsonMarshaller {
             String.class,
             Boolean.class,
             Integer.class, Long.class, Double.class, Float.class,
-            LocalDate.class, LocalTime.class, LocalDateTime.class, YearMonth.class);;
+            LocalDate.class, LocalTime.class, LocalDateTime.class, YearMonth.class);
 
     public static String marshal(final Object o) {
         final StringBuilder json = new StringBuilder();
@@ -44,20 +44,32 @@ public final class JsonMarshaller {
         else if (c.isArray()) marshalAndAppendArray(o, b);
         else if (Collection.class.isAssignableFrom(c)) marshalAndAppendCollection(o, b);
         else if (Map.class.isAssignableFrom(c)) marshalAndAppendMap(o, b);
+        else marshalAndAppendObject(o, b);
+    }
 
-        for (Field field : c.getDeclaredFields()) {
+    private static void marshalAndAppendObject(Object o, StringBuilder b) {
+        final Class<?> c = o.getClass();
+
+        b.append("{");
+        boolean first = true;
+
+        for (final Field field : c.getDeclaredFields()) {
             final String fieldName = field.getName();
             final Method getter = ReflectionUtil.findGetter(field);
 
             if (getter != null) {
                 try {
-                    b.append(fieldName).append(": ");
-                    marshalAndAppend(getter.invoke(o), b);
+                    Object fieldValue = getter.invoke(o);
+                    if (!first) b.append(",");
+                    b.append(quote(fieldName)).append(":");
+                    marshalAndAppend(fieldValue, b);
+                    first = false;
                 } catch (IllegalAccessException | InvocationTargetException ignored) {
-                    b.append(fieldName).append(": ").append("null");
                 }
-            } else b.append(fieldName).append(": ").append("null");
+            }
         }
+
+        b.append("}");
     }
 
     private static void marshalAndAppendScalar(final Object s, final StringBuilder b) {
@@ -65,7 +77,7 @@ public final class JsonMarshaller {
 
         if (Boolean.class.equals(c)) b.append(s);
         else if (Number.class.isAssignableFrom(c)) b.append(s);
-        else b.append("\"").append(s).append("\"");
+        else b.append(quote(s.toString()));
     }
 
     private static void marshalAndAppendMap(final Object m, final StringBuilder b) {
@@ -73,11 +85,14 @@ public final class JsonMarshaller {
 
         b.append("{");
         boolean first = true;
+
         for (Entry<?, ?> entry : map.entrySet()) {
-            if (!first) b.append(", ");
-            b.append("\"").append(entry.getKey()).append("\": ");
+            if (!first) b.append(",");
+            b.append(quote(entry.getKey().toString())).append(":");
             marshalAndAppend(entry.getValue(), b);
+            first = false;
         }
+
         b.append("}");
     }
 
@@ -87,7 +102,7 @@ public final class JsonMarshaller {
         b.append("[");
         boolean first = true;
         for (Object e : collection) {
-            if (!first) b.append(", ");
+            if (!first) b.append(",");
             marshalAndAppend(e, b);
             first = false;
         }
@@ -100,10 +115,14 @@ public final class JsonMarshaller {
         b.append("[");
         boolean first = true;
         for (int i = 0; i < length; i++) {
-            if (!first) b.append(", ");
+            if (!first) b.append(",");
             marshalAndAppend(Array.get(a, i), b);
             first = false;
         }
         b.append("]");
+    }
+
+    private static String quote(final String s) {
+        return "\"" + s + "\"";
     }
 }

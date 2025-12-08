@@ -20,6 +20,7 @@ public final class Constant {
     public static final class Reflection {
         public static final String SETTER_PREFIX = "set";
         public static final String GETTER_PREFIX = "get";
+        public static final String BOOLEAN_GETTER_PREFIX = "is";
     }
 
     public static final class Regex {

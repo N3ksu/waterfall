@@ -1,5 +1,7 @@
 package waterfall.kernel.response.json;
 
+import waterfall.kernel.serialization.json.JsonMarshaller;
+
 public final class JsonResponse {
     private final boolean success;
     private final int code;
@@ -11,6 +13,26 @@ public final class JsonResponse {
         this.code = code;
         this.message = message;
         this.data = data;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public String json() {
+        return JsonMarshaller.marshal(this);
     }
 
     private static class Status {

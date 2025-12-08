@@ -28,8 +28,14 @@ public final class ReflectionUtil {
      * If the getter wasn't defined this method return null
      */
     public static Method findGetter(final Field field) {
+        final Class<?> fieldType = field.getType();
         final String fieldName = field.getName();
-        final String getterName = Constant.Reflection.GETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
+
+        String prefix = Constant.Reflection.GETTER_PREFIX;
+
+        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) prefix = Constant.Reflection.BOOLEAN_GETTER_PREFIX;
+
+        final String getterName = prefix + Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
         try {
             return field.getDeclaringClass().getDeclaredMethod(getterName);
