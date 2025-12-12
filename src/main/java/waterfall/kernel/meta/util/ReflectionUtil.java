@@ -64,4 +64,28 @@ public final class ReflectionUtil {
         Constructor<?> ctr = c.getDeclaredConstructor();
         return ctr.newInstance();
     }
+
+    public static Object addToArrayOrReplace(Object array, int i, Object element, Class<?> elementClass) {
+        if (array == null) {
+            Object newArray  = Array.newInstance(elementClass, i + 1);
+            Array.set(newArray, i, element);
+            return newArray;
+        }
+
+        int length = Array.getLength(array);
+        int newLength = Math.max(i + 1, length);
+
+        if (newLength > length) {
+            Object newArray = Array.newInstance(elementClass, newLength);
+
+            for (int j = 0; j < length; j++)
+                Array.set(newArray, j, Array.get(array, j));
+
+            Array.set(newArray, i, element);
+            return newArray;
+        } else {
+            Array.set(array, i, element);
+            return array;
+        }
+    }
 }

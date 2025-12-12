@@ -2,17 +2,21 @@ package waterfall.kernel.meta.binding;
 
 import jakarta.servlet.http.HttpServletRequest;
 import waterfall.api.annotation.request.RequestParam;
+import waterfall.kernel.constant.Constant;
 import waterfall.kernel.meta.util.ReflectionUtil;
 import waterfall.kernel.serialization.string.StringUnMarshaller;
 import waterfall.kernel.routing.route.Route;
 import waterfall.kernel.util.tuple.Pair;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class RouteArgumentResolver {
-    public Object[] resolve(Route route, HttpServletRequest req) throws Exception {
+    public static Object[] resolve(Route route, HttpServletRequest req) throws Exception {
         Parameter[] params = route.getAction().getParameters();
         Object[] args = new Object[params.length];
 
@@ -53,7 +57,11 @@ public final class RouteArgumentResolver {
                         args[i] = model;
                         continue;
                     } else {
+                        List<Pair<String, Integer>> dotNotations = findArrayDotNotations(req, param);
 
+                        for (Pair<String, Integer> dotNotation : dotNotations) {
+                            
+                        }
                     }
             }
             args[i] = null; // TODO provide better default value
@@ -62,7 +70,7 @@ public final class RouteArgumentResolver {
         return args;
     }
 
-    public List<String> findDotNotations(HttpServletRequest req, Parameter param) {
+    private static List<String> findDotNotations(HttpServletRequest req, Parameter param) {
         return req.getParameterMap()
                 .keySet()
                 .stream()
@@ -70,17 +78,28 @@ public final class RouteArgumentResolver {
                 .toList();
     }
 
-    public List<Pair<String, Integer>> findDotArrayNotations(HttpServletRequest req ,Parameter param) {
-        return null;
+    private static List<Pair<String, Integer>> findArrayDotNotations(HttpServletRequest req ,Parameter param) {
+        Pattern pattern = Pattern.compile("^" + param.getName() + "\\[(\\d+)](?:\\..*)?$");
+        List<Pair<String, Integer>> dotNotations = new ArrayList<>();
+
+        for (String key : req.getParameterMap().keySet()) {
+            Matcher matcher = pattern.matcher(key);
+            if (matcher.matches()) {
+                int i = Integer.parseInt(matcher.group(1));
+                dotNotations.add(Pair.of(key, i));
+            }
+        }
+
+        return dotNotations;
     }
     
-    private String getRequestParameterName(Parameter param) {
+    private static String getRequestParameterName(Parameter param) {
         return  param.isAnnotationPresent(RequestParam.class) ?
                 param.getAnnotation(RequestParam.class).value() :
                 param.getName();
     }
 
-    private boolean isParamMapStringStringArray(Parameter param) {
+    private static boolean isParamMapStringStringArray(Parameter param) {
         final Type type = param.getParameterizedType();
 
         if (!(type instanceof ParameterizedType parameterizedType)) return false;

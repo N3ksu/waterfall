@@ -13,11 +13,9 @@ import waterfall.kernel.response.endpoint.EndPoint;
 
 public final class Dispatcher {
     private final Router router;
-    private final RouteArgumentResolver routeArgumentResolver;
 
     public Dispatcher(Router router) {
         this.router = router;
-        routeArgumentResolver = new RouteArgumentResolver();
     }
 
     public void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -28,7 +26,7 @@ public final class Dispatcher {
         }
 
         Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(route.getAction().getDeclaringClass());
-        Object[] args = routeArgumentResolver.resolve(route, req);
+        Object[] args = RouteArgumentResolver.resolve(route, req);
         Class<?> returnType = route.getAction().getReturnType();
 
         if (ModelView.class.equals(returnType)) {

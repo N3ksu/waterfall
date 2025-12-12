@@ -2,13 +2,13 @@ package waterfall.kernel.response.json;
 
 import waterfall.kernel.serialization.json.JsonMarshaller;
 
-public final class JsonResponse {
+public final class Response {
     private final boolean success;
     private final int code;
     private final String message;
     private final Object data;
 
-    private JsonResponse(boolean success, int code, String message, Object data) {
+    private Response(boolean success, int code, String message, Object data) {
         this.success = success;
         this.code = code;
         this.message = message;
@@ -40,11 +40,11 @@ public final class JsonResponse {
         public static final int INTERNAL_SERVER_ERROR = 500;
     }
 
-    public static JsonResponse ok(Object data) {
-        return new JsonResponse(true, Status.OK, "OK", data);
+    public static Response ok(Object data) {
+        return new Response(true, Status.OK, "OK", data);
     }
 
-    public static JsonResponse err(Throwable t) {
-        return new JsonResponse(false, Status.INTERNAL_SERVER_ERROR, t.getMessage(), null);
+    public static Response err(Throwable t) {
+        return new Response(false, Status.INTERNAL_SERVER_ERROR, t.getMessage(), null);
     }
 }

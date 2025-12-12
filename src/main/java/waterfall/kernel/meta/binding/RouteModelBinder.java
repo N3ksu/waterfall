@@ -4,15 +4,20 @@ import waterfall.kernel.constant.Constant;
 import waterfall.kernel.meta.util.ReflectionUtil;
 import waterfall.kernel.serialization.string.StringUnMarshaller;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class RouteModelBinder {
+    private static final Pattern ARRAY_DOT_NOTATION_PATTERN_OPT_INDEX = Pattern.compile
+            ("^(" + Constant.Regex.JAVA_VAR_NOMENCLATURE_RGX + ")(?:\\[(\\d+)])?$");
+
     public static void bind(Object model, String[] fieldTree, int f, String strValue) throws Exception {
-        Matcher matcher = Constant.Regex.ARRAY_NOTATION_PATTERN.matcher(fieldTree[f]);
+        if (f >= fieldTree.length) return;
+
+        Matcher matcher = ARRAY_DOT_NOTATION_PATTERN_OPT_INDEX.matcher(fieldTree[f]);
 
         if (!matcher.matches()) throw new Exception("Invalid field " + fieldTree[f]);
 
@@ -40,39 +45,15 @@ public final class RouteModelBinder {
 
                     if (StringUnMarshaller.isSupported(componentType)) {
                         Object element = StringUnMarshaller.unMarshal(strValue, componentType);
-                        Object array = addToArrayOrReplace(getter.invoke(model), i, element, componentType);
+                        Object array = ReflectionUtil.addToArrayOrReplace(getter.invoke(model), i, element, componentType);
                         setter.invoke(model, array);
                     } else {
                         Object element = ReflectionUtil.newInstanceFromNoArgsConstructor(componentType);
-                        Object array = addToArrayOrReplace(getter.invoke(model), i, element, componentType);
+                        Object array = ReflectionUtil.addToArrayOrReplace(getter.invoke(model), i, element, componentType);
                         bind(element, fieldTree, f + 1, strValue);
                         setter.invoke(model, array);
                     }
                 }
-        }
-    }
-
-    public static Object addToArrayOrReplace(Object array, int i, Object element, Class<?> elementClass) {
-        if (array == null) {
-            Object newArray  = Array.newInstance(elementClass, i + 1);
-            Array.set(newArray, i, element);
-            return newArray;
-        }
-
-        int length = Array.getLength(array);
-        int newLength = Math.max(i + 1, length);
-
-        if (newLength > length) {
-            Object newArray = Array.newInstance(elementClass, newLength);
-
-            for (int j = 0; j < length; j++)
-                Array.set(newArray, j, Array.get(array, j));
-
-            Array.set(newArray, i, element);
-            return newArray;
-        } else {
-            Array.set(array, i, element);
-            return array;
         }
     }
 }

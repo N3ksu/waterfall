@@ -2,7 +2,7 @@ package waterfall.kernel.response.endpoint;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import waterfall.kernel.response.json.JsonResponse;
+import waterfall.kernel.response.json.Response;
 import waterfall.kernel.routing.route.Route;
 
 import java.io.PrintWriter;
@@ -17,10 +17,10 @@ public final class JsonEndPoint implements EndPoint {
             Method method = route.getAction();
             Object actionResult = method.invoke(controller, args);
             PrintWriter out = res.getWriter();
-            out.print(JsonResponse.ok(actionResult).json());
+            out.print(Response.ok(actionResult).json());
         } catch (Exception e) {
             PrintWriter out = res.getWriter();
-            out.print(JsonResponse.err(e).json());
+            out.print(Response.err(e).json());
         }
     }
 }
