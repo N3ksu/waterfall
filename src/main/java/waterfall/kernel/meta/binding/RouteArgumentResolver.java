@@ -56,13 +56,7 @@ public final class RouteArgumentResolver {
 
                         args[i] = model;
                         continue;
-                    } else {
-                        List<Pair<String, Integer>> dotNotations = findArrayDotNotations(req, param);
-
-                        for (Pair<String, Integer> dotNotation : dotNotations) {
-                            
-                        }
-                    }
+                    } else {}
             }
             args[i] = null; // TODO provide better default value
         }
@@ -76,21 +70,6 @@ public final class RouteArgumentResolver {
                 .stream()
                 .filter(s -> s.startsWith(param.getName() + "."))
                 .toList();
-    }
-
-    private static List<Pair<String, Integer>> findArrayDotNotations(HttpServletRequest req ,Parameter param) {
-        Pattern pattern = Pattern.compile("^" + param.getName() + "\\[(\\d+)](?:\\..*)?$");
-        List<Pair<String, Integer>> dotNotations = new ArrayList<>();
-
-        for (String key : req.getParameterMap().keySet()) {
-            Matcher matcher = pattern.matcher(key);
-            if (matcher.matches()) {
-                int i = Integer.parseInt(matcher.group(1));
-                dotNotations.add(Pair.of(key, i));
-            }
-        }
-
-        return dotNotations;
     }
     
     private static String getRequestParameterName(Parameter param) {
