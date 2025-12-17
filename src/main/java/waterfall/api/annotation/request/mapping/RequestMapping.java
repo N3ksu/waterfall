@@ -1,6 +1,6 @@
 package waterfall.api.annotation.request.mapping;
 
-import waterfall.api.http.HttpMethod;
+import waterfall.kernel.routing.http.method.HttpMethod;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

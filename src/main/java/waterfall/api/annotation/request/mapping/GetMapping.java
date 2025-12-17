@@ -1,7 +1,7 @@
 package waterfall.api.annotation.request.mapping;
 
-import waterfall.api.http.HttpMethod;
-import waterfall.kernel.annotation.MergeTo;
+import waterfall.kernel.routing.http.method.HttpMethod;
+import waterfall.kernel.meta.annotation.Extends;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 
-@MergeTo(RequestMapping.class)
+@Extends(RequestMapping.class)
 @RequestMapping(method = HttpMethod.GET)
 public @interface GetMapping {
     String value();
