@@ -2,6 +2,7 @@ package waterfall.kernel.jakarta.servlet;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,11 @@ import waterfall.kernel.routing.router.Router;
 import java.io.IOException;
 
 @WebServlet(Constant.Jakarta.FRONT_SERVLET_URL_MAPPING)
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 10 * 1024 * 1024,
+        maxRequestSize = 50 * 1024 * 1024
+)
 public final class FrontServlet extends HttpServlet {
     private RequestDispatcher ctxDefaultDispatcher;
     private Dispatcher waterFallDispatcher;
