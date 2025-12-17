@@ -14,20 +14,19 @@ import waterfall.kernel.routing.router.Router;
 
 import java.io.IOException;
 
-@WebServlet(Constant.Jakarta.FRONT_SERVLET_URL_MAPPING)
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024,
-        maxFileSize = 10 * 1024 * 1024,
-        maxRequestSize = 50 * 1024 * 1024
-)
+@WebServlet(FrontServlet.FRONT_SERVLET_URL_MAPPING)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 50 * 1024 * 1024)
 public final class FrontServlet extends HttpServlet {
+    public static final String SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME = "default";
+    public static final String FRONT_SERVLET_URL_MAPPING = "/";
+    
     private RequestDispatcher ctxDefaultDispatcher;
     private Dispatcher waterFallDispatcher;
 
     @Override
     public void init()
             throws ServletException {
-        ctxDefaultDispatcher = getServletContext().getNamedDispatcher(Constant.Jakarta.SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME);
+        ctxDefaultDispatcher = getServletContext().getNamedDispatcher(SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
         if (ctxDefaultDispatcher == null) throw new ServletException("The context's default dispatcher cannot be found");
 
