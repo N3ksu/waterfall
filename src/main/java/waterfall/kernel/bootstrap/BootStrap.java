@@ -13,10 +13,10 @@ import java.util.Properties;
 import java.util.Set;
 
 public final class BootStrap {
-    private final ServletContext ctx;
+    private final ServletContext context;
 
-    public BootStrap(ServletContext ctx) {
-        this.ctx = ctx;
+    public BootStrap(ServletContext context) {
+        this.context = context;
     }
 
     public void bootstrap() throws Exception {
@@ -27,16 +27,16 @@ public final class BootStrap {
     private void bootstrapConfig() throws Exception {
         // TODO What to do if the client doesn't have the properties file
         Properties props = new Properties();
-        props.load(ctx.getResourceAsStream(Constant.Config.CONFIG_FILE_URI));
-        props.forEach((key, value) -> ctx.setAttribute(key.toString(), value));
+        props.load(context.getResourceAsStream(Constant.Config.CONFIG_FILE_URI));
+        props.forEach((key, value) -> context.setAttribute(key.toString(), value));
     }
 
     private void bootstrapRouter() throws Exception {
-        String controllerPackage = (String) ctx.getAttribute(Constant.Config.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
+        String controllerPackage = (String) context.getAttribute(Constant.Config.CONTROLLER_PACKAGE_CONFIG_PARAM_NAME);
 
         Set<Pair<Method, RequestMapping>> methodAndAnnotationPairs = IOReflectionUtil
                 .findMethodAndAnnotationPairs(controllerPackage, Controller.class, RequestMapping.class);
 
-        ctx.setAttribute(Constant.Context.ROUTER_CTX_ATTR_NAME, Router.Builder.build(methodAndAnnotationPairs));
+        context.setAttribute(Constant.Context.ROUTER_CTX_ATTR_NAME, Router.Builder.build(methodAndAnnotationPairs));
     }
 }

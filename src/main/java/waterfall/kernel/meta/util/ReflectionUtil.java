@@ -1,5 +1,6 @@
 package waterfall.kernel.meta.util;
 
+import waterfall.kernel.constant.Constant;
 import waterfall.kernel.meta.proxy.MergedAnnotationResolver;
 import waterfall.kernel.util.tuple.Pair;
 
@@ -9,16 +10,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class ReflectionUtil {
-    public static final String SETTER_PREFIX = "set";
-    public static final String GETTER_PREFIX = "get";
-    public static final String BOOLEAN_GETTER_PREFIX = "is";
-
     /**
      * If the setter wasn't defined this method return null
      */
     public static Method findSetter(Field field) {
         String fieldName = field.getName();
-        String setterName = SETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
+        String setterName = Constant.Reflection.SETTER_PREFIX +  Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
         try {
             return field.getDeclaringClass().getDeclaredMethod(setterName, field.getType());
@@ -34,9 +31,9 @@ public final class ReflectionUtil {
         Class<?> fieldType = field.getType();
         String fieldName = field.getName();
 
-        String prefix = GETTER_PREFIX;
+        String prefix = Constant.Reflection.GETTER_PREFIX;
 
-        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) prefix = BOOLEAN_GETTER_PREFIX;
+        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) prefix = Constant.Reflection.BOOLEAN_GETTER_PREFIX;
 
         String getterName = prefix + Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
