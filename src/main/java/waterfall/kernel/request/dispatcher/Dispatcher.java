@@ -27,9 +27,8 @@ public final class Dispatcher {
 
         Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(route.getAction().getDeclaringClass());
         Object[] args = RouteArgumentResolver.resolve(route, req);
-        Class<?> returnType = route.getAction().getReturnType();
 
-        if (ModelView.class.equals(returnType)) {
+        if (ModelView.class.equals(route.getAction().getReturnType())) {
             EndPoint.MV.forward(req, res, route, controller, args);
         } else if (route.produces(MediaType.APPLICATION_JSON)) {
             EndPoint.JSON.forward(req, res, route, controller, args);
