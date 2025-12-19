@@ -2,6 +2,7 @@ package waterfall.kernel.jakarta.servlet;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,21 +15,22 @@ import waterfall.kernel.routing.router.Router;
 import java.io.IOException;
 
 @WebServlet(Constant.Jakarta.FRONT_SERVLET_URL_MAPPING)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 50 * 1024 * 1024)
 public final class FrontServlet extends HttpServlet {
-    private RequestDispatcher ctxDefaultDispatcher;
-    private Dispatcher waterFallDispatcher;
+    private RequestDispatcher contextDefaultDispatcher;
+    private Dispatcher dispatcher;
 
     @Override
     public void init()
             throws ServletException {
-        ctxDefaultDispatcher = getServletContext().getNamedDispatcher(Constant.Jakarta.SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME);
+        contextDefaultDispatcher = getServletContext().getNamedDispatcher(Constant.Jakarta.SERVLET_CTX_DEFAULT_REQ_DISPATCHER_NAME);
 
-        if (ctxDefaultDispatcher == null) throw new ServletException("The context's default dispatcher cannot be found");
+        if (contextDefaultDispatcher == null) throw new ServletException("The context's default dispatcher cannot be found");
 
         Router router = (Router) getServletContext()
                 .getAttribute(Constant.Context.ROUTER_CTX_ATTR_NAME);
 
-        waterFallDispatcher = new Dispatcher(router);
+        dispatcher = new Dispatcher(router);
     }
 
     @Override
@@ -36,11 +38,11 @@ public final class FrontServlet extends HttpServlet {
             throws ServletException, IOException {
         String path = req.getServletPath();
 
-        if (getServletContext().getResource(path) != null) ctxDefaultDispatcher.forward(req, res);
+        if (getServletContext().getResource(path) != null) contextDefaultDispatcher.forward(req, res);
 
         else {
             try {
-                waterFallDispatcher.forward(req, res);
+                dispatcher.forward(req, res);
             } catch (Exception e) {
                 throw new ServletException(e);
             }

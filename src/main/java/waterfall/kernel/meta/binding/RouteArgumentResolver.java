@@ -1,19 +1,19 @@
 package waterfall.kernel.meta.binding;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import waterfall.api.annotation.request.RequestParam;
-import waterfall.kernel.constant.Constant;
 import waterfall.kernel.meta.util.ReflectionUtil;
 import waterfall.kernel.serialization.string.StringUnMarshaller;
 import waterfall.kernel.routing.route.Route;
-import waterfall.kernel.util.tuple.Pair;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public final class RouteArgumentResolver {
     public static Object[] resolve(Route route, HttpServletRequest req) throws Exception {
@@ -30,6 +30,9 @@ public final class RouteArgumentResolver {
 
             if (isParamMapStringStringArray(param)) {
                 args[i] = req.getParameterMap();
+                continue;
+            } else if (isParamMapStringListByteArray(param)) {
+                args[i] = getRequestParts(req);
                 continue;
             } else if ((pathVarValue = pathVars.get(param.getName())) != null) {
                 // What if the client is dumb enough to use int[] id as a parameter
@@ -78,19 +81,48 @@ public final class RouteArgumentResolver {
                 param.getName();
     }
 
+    private static Map<String, List<byte[]>> getRequestParts(HttpServletRequest req) throws Exception {
+        return req.getParts().stream().filter(p -> p.getSubmittedFileName() != null)
+                .collect(Collectors.groupingBy(Part::getName,
+                        Collectors.mapping(p -> {
+                                    try (InputStream in = p.getInputStream()) {
+                                        return in.readAllBytes();
+                                    } catch (IOException e) {
+                                        throw new UncheckedIOException(e);
+                                    }}, Collectors.toList())));
+    }
+
     private static boolean isParamMapStringStringArray(Parameter param) {
-        final Type type = param.getParameterizedType();
+        Type type = param.getParameterizedType();
 
-        if (!(type instanceof ParameterizedType parameterizedType)) return false;
+        if (!(type instanceof ParameterizedType mapType)) return false;
 
-        if (parameterizedType.getRawType() != Map.class) return false;
+        if (mapType.getRawType() != Map.class) return false;
 
-        final Type[] args = parameterizedType.getActualTypeArguments();
-        final boolean keyIsString = args[0] == String.class;
-        boolean valueIsStringArray = false;
+        Type[] mapArgs = mapType.getActualTypeArguments();
 
-        if (args[1] instanceof Class<?> clazz && clazz.isArray()) valueIsStringArray = clazz.getComponentType() == String.class;
+        if (mapArgs[0] != String.class) return false;
 
-        return keyIsString && valueIsStringArray;
+        return mapArgs[1] instanceof Class<?> arrayType && arrayType.getComponentType() == String.class;
+    }
+
+    private static boolean isParamMapStringListByteArray(Parameter param) {
+        Type type = param.getParameterizedType();
+
+        if (!(type instanceof ParameterizedType mapType)) return false;
+
+        if(mapType.getRawType() != Map.class) return false;
+
+        Type[] mapArgs = mapType.getActualTypeArguments();
+
+        if (mapArgs[0] != String.class) return false;
+
+        if (!(mapArgs[1] instanceof ParameterizedType listType)) return false;
+
+        if (listType.getRawType() != List.class) return false;
+
+        Type[] listArgs = listType.getActualTypeArguments();
+
+        return listArgs[0] instanceof Class<?> arrayType && arrayType.getComponentType() == byte.class;
     }
 }
