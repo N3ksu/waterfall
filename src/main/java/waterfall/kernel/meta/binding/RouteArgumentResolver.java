@@ -95,13 +95,16 @@ public final class RouteArgumentResolver {
     private static boolean isParamMapStringStringArray(Parameter param) {
         Type type = param.getParameterizedType();
 
-        if (!(type instanceof ParameterizedType mapType)) return false;
+        if (!(type instanceof ParameterizedType mapType))
+            return false;
 
-        if (mapType.getRawType() != Map.class) return false;
+        if (mapType.getRawType() != Map.class)
+            return false;
 
         Type[] mapArgs = mapType.getActualTypeArguments();
 
-        if (mapArgs[0] != String.class) return false;
+        if (mapArgs[0] != String.class)
+            return false;
 
         return mapArgs[1] instanceof Class<?> arrayType && arrayType.getComponentType() == String.class;
     }
@@ -109,17 +112,22 @@ public final class RouteArgumentResolver {
     private static boolean isParamMapStringListByteArray(Parameter param) {
         Type type = param.getParameterizedType();
 
-        if (!(type instanceof ParameterizedType mapType)) return false;
+        if (!(type instanceof ParameterizedType mapType))
+            return false;
 
-        if(mapType.getRawType() != Map.class) return false;
+        if(mapType.getRawType() != Map.class)
+            return false;
 
         Type[] mapArgs = mapType.getActualTypeArguments();
 
-        if (mapArgs[0] != String.class) return false;
+        if (mapArgs[0] != String.class)
+            return false;
 
-        if (!(mapArgs[1] instanceof ParameterizedType listType)) return false;
+        if (!(mapArgs[1] instanceof ParameterizedType listType))
+            return false;
 
-        if (listType.getRawType() != List.class) return false;
+        if (listType.getRawType() != List.class)
+            return false;
 
         Type[] listArgs = listType.getActualTypeArguments();
 

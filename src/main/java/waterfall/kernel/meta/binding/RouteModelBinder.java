@@ -11,13 +11,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class RouteModelBinder {
-    private static final Pattern ARRAY_DOT_NOTATION_PATTERN_OPT_INDEX = Pattern.compile
-            ("^(" + Constant.Regex.JAVA_VAR_NOMENCLATURE_RGX + ")(?:\\[(\\d+)])?$");
+    private static final Pattern ARRAY_DOT_NOTATION_PATTERN_OPTIONAL_INDEX = Pattern.compile
+            ("^(" + Constant.Regex.JAVA_VAR_NOMENCLATURE_REGEX + ")(?:\\[(\\d+)])?$");
 
     public static void bind(Object model, String[] fieldTree, int f, String strValue) throws Exception {
         if (f >= fieldTree.length) return;
 
-        Matcher matcher = ARRAY_DOT_NOTATION_PATTERN_OPT_INDEX.matcher(fieldTree[f]);
+        Matcher matcher = ARRAY_DOT_NOTATION_PATTERN_OPTIONAL_INDEX.matcher(fieldTree[f]);
 
         if (!matcher.matches()) throw new Exception("Invalid field " + fieldTree[f]);
 

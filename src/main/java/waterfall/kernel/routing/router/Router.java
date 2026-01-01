@@ -24,18 +24,17 @@ public class Router {
 
     public Route findRoute(HttpMethod httpMethod, String uri) {
         for (Route route: routes.get(httpMethod))
-            if (route.getRgxPattern().matcher(uri).matches()) return route;
+            if (route.getRegexPattern().matcher(uri).matches()) return route;
 
         return null;
     }
 
     public static final class Builder {
-        public static Router build(Set<Pair<Method, RequestMapping>> pairs) throws Exception {
+        public static Router build(Set<Route.Builder.RouteBlueprint> routeBlueprints) {
             Router router = new Router();
 
-            for (Pair<Method, RequestMapping> pair : pairs)
-                for (Route route: Route.Builder.build(pair.getLeft(), pair.getRight()))
-                    router.add(route);
+            for (Route.Builder.RouteBlueprint routeBlueprint : routeBlueprints)
+                router.add(Route.Builder.build(routeBlueprint));
 
             return router;
         }

@@ -40,11 +40,16 @@ public final class JsonMarshaller {
 
         Class<?> c = o.getClass();
 
-        if (isScalar(c)) marshalAndAppendScalar(o, b);
-        else if (c.isArray()) marshalAndAppendArray(o, b);
-        else if (Collection.class.isAssignableFrom(c)) marshalAndAppendCollection(o, b);
-        else if (Map.class.isAssignableFrom(c)) marshalAndAppendMap(o, b);
-        else marshalAndAppendObject(o, b);
+        if (isScalar(c))
+            marshalAndAppendScalar(o, b);
+        else if (c.isArray())
+            marshalAndAppendArray(o, b);
+        else if (Collection.class.isAssignableFrom(c))
+            marshalAndAppendCollection(o, b);
+        else if (Map.class.isAssignableFrom(c))
+            marshalAndAppendMap(o, b);
+        else
+            marshalAndAppendObject(o, b);
     }
 
     private static void marshalAndAppendObject(Object o, StringBuilder b) {
@@ -60,8 +65,11 @@ public final class JsonMarshaller {
             if (getter != null) {
                 try {
                     Object fieldValue = getter.invoke(o);
-                    if (!first) b.append(",");
-                    b.append(quote(fieldName)).append(":");
+
+                    if (!first)
+                        b.append(",");
+
+                    b.append(StringUtil.quote(fieldName)).append(":");
                     marshalAndAppend(fieldValue, b);
                     first = false;
                 } catch (IllegalAccessException | InvocationTargetException ignored) {
@@ -75,9 +83,12 @@ public final class JsonMarshaller {
     private static void marshalAndAppendScalar(Object s, StringBuilder b) {
         Class<?> c = s.getClass();
 
-        if (Boolean.class.equals(c)) b.append(s);
-        else if (Number.class.isAssignableFrom(c)) b.append(s);
-        else b.append(quote(s.toString()));
+        if (Boolean.class.equals(c))
+            b.append(s);
+        else if (Number.class.isAssignableFrom(c))
+            b.append(s);
+        else
+            b.append(StringUtil.quote(s.toString()));
     }
 
     private static void marshalAndAppendMap(Object m, StringBuilder b) {
@@ -87,8 +98,10 @@ public final class JsonMarshaller {
         boolean first = true;
 
         for (Entry<?, ?> entry : map.entrySet()) {
-            if (!first) b.append(",");
-            b.append(quote(entry.getKey().toString())).append(":");
+            if (!first)
+                b.append(",");
+
+            b.append(StringUtil.quote(entry.getKey().toString())).append(":");
             marshalAndAppend(entry.getValue(), b);
             first = false;
         }
@@ -101,11 +114,15 @@ public final class JsonMarshaller {
 
         b.append("[");
         boolean first = true;
+
         for (Object e : collection) {
-            if (!first) b.append(",");
+            if (!first)
+                b.append(",");
+
             marshalAndAppend(e, b);
             first = false;
         }
+
         b.append("]");
     }
 
@@ -114,15 +131,21 @@ public final class JsonMarshaller {
 
         b.append("[");
         boolean first = true;
+
         for (int i = 0; i < length; i++) {
-            if (!first) b.append(",");
+            if (!first)
+                b.append(",");
+
             marshalAndAppend(Array.get(a, i), b);
             first = false;
         }
+
         b.append("]");
     }
 
-    private static String quote(String s) {
-        return "\"" + s + "\"";
+    private static class StringUtil {
+        private static String quote(String s) {
+            return "\"" + s + "\"";
+        }
     }
 }

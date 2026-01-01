@@ -1,5 +1,6 @@
 package waterfall.kernel.meta.util;
 
+import waterfall.kernel.exception.technical.meta.InstantiationNoArgsConstructorException;
 import waterfall.kernel.constant.Constant;
 import waterfall.kernel.meta.proxy.MergedAnnotationResolver;
 import waterfall.kernel.util.tuple.Pair;
@@ -33,7 +34,8 @@ public final class ReflectionUtil {
 
         String prefix = Constant.Reflection.GETTER_PREFIX;
 
-        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) prefix = Constant.Reflection.BOOLEAN_GETTER_PREFIX;
+        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType))
+            prefix = Constant.Reflection.BOOLEAN_GETTER_PREFIX;
 
         String getterName = prefix + Character.toUpperCase(fieldName.charAt(0)) + field.getName().substring(1);
 
@@ -44,25 +46,27 @@ public final class ReflectionUtil {
         }
     }
 
-    public static <T extends Annotation> Set<Pair<Method, T>> findMethodAndAnnotationPairs(Class<?> c, Class<T> a)
-            throws Exception {
+    public static <T extends Annotation> Set<Pair<Method, T>> findAnnotatedMethod(Class<?> clazz, Class<T> annotationClass) {
         Set<Pair<Method, T>> pairs = new HashSet<>();
 
         T annotation;
-        for (Method method : c.getDeclaredMethods())
-            if ((annotation = MergedAnnotationResolver.findAnnotation(method, a)) != null)
+        for (Method method : clazz.getDeclaredMethods())
+            if ((annotation = MergedAnnotationResolver.findAnnotation(method, annotationClass)) != null)
                 pairs.add(Pair.of(method, annotation));
 
         return pairs;
     }
 
     /**
-     * The no args constructor should be public
+     * The no args constructor of clazz should be declared and public
      */
-    public static Object newInstanceFromNoArgsConstructor(Class<?> c)
-            throws Exception {
-        Constructor<?> ctr = c.getDeclaredConstructor();
-        return ctr.newInstance();
+    public static Object newInstanceFromNoArgsConstructor(Class<?> clazz) {
+        try {
+            Constructor<?> constructor = clazz.getDeclaredConstructor();
+            return constructor.newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new InstantiationNoArgsConstructorException(clazz, e);
+        }
     }
 
     public static Object addToArrayOrReplace(Object array, int i, Object element, Class<?> elementClass) {

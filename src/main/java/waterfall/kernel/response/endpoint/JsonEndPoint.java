@@ -18,9 +18,11 @@ public final class JsonEndPoint implements EndPoint {
             Object actionResult = method.invoke(controller, args);
             PrintWriter out = res.getWriter();
             out.print(Response.ok(actionResult).json());
+            out.close();
         } catch (Exception e) {
             PrintWriter out = res.getWriter();
             out.print(Response.err(e).json());
+            out.close();
         }
     }
 }

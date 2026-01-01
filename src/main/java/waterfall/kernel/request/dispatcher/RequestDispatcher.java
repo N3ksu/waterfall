@@ -11,10 +11,10 @@ import waterfall.kernel.meta.util.ReflectionUtil;
 import waterfall.api.ui.ModelView;
 import waterfall.kernel.response.endpoint.EndPoint;
 
-public final class Dispatcher {
+public final class RequestDispatcher {
     private final Router router;
 
-    public Dispatcher(Router router) {
+    public RequestDispatcher(Router router) {
         this.router = router;
     }
 

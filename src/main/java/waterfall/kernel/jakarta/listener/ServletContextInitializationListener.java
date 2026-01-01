@@ -6,11 +6,12 @@ import jakarta.servlet.annotation.WebListener;
 import waterfall.kernel.bootstrap.BootStrap;
 
 @WebListener
-public final class ServletContextListenerImpl implements ServletContextListener {
+public final class ServletContextInitializationListener implements ServletContextListener {
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        // TODO Make this method use our logging library
         try {
-            (new BootStrap(sce.getServletContext())).bootstrap();
+            (new BootStrap()).boot(servletContextEvent.getServletContext());
         } catch (Exception e) {
             e.printStackTrace(System.err);
             System.err.flush();
