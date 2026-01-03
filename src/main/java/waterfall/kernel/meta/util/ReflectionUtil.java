@@ -52,7 +52,7 @@ public final class ReflectionUtil {
         T annotation;
         for (Method method : clazz.getDeclaredMethods())
             if ((annotation = MergedAnnotationResolver.findAnnotation(method, annotationClass)) != null)
-                pairs.add(Pair.of(method, annotation));
+                pairs.add(new Pair<>(method, annotation));
 
         return pairs;
     }

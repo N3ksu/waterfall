@@ -32,24 +32,34 @@ public final class StringUnMarshaller {
     }
 
     public static Object unMarshal(String s, Class<?> c) {
-        if (s == null) return null;
+        if (s == null)
+            return null;
 
         Object o = null;
 
         // String
-        if (String.class.equals(c)) o = s;
+        if (String.class.equals(c))
+            o = s;
 
         // Numeric value
-        else if (int.class.equals(c) || Integer.class.equals(c)) o = Integer.valueOf(s);
-        else if (long.class.equals(c) || Long.class.equals(c)) o = Long.valueOf(s);
-        else if (double.class.equals(c) || Double.class.equals(c)) o = Double.valueOf(s);
-        else if (float.class.equals(c) || Float.class.equals(c)) o = Float.valueOf(s);
+        else if (int.class.equals(c) || Integer.class.equals(c))
+            o = Integer.valueOf(s);
+        else if (long.class.equals(c) || Long.class.equals(c))
+            o = Long.valueOf(s);
+        else if (double.class.equals(c) || Double.class.equals(c))
+            o = Double.valueOf(s);
+        else if (float.class.equals(c) || Float.class.equals(c))
+            o = Float.valueOf(s);
 
         // Time related value
-        else if (LocalDate.class.equals(c)) o = LocalDate.parse(s); // type="date"
-        else if (LocalTime.class.equals(c)) o = LocalTime.parse(s); // type="time"
-        else if (LocalDateTime.class.equals(c)) o = LocalDateTime.parse(s); // type="datetime-local"
-        else if (YearMonth.class.equals(c)) o = YearMonth.parse(s); // type="month"
+        else if (LocalDate.class.equals(c))
+            o = LocalDate.parse(s); // type="date"
+        else if (LocalTime.class.equals(c))
+            o = LocalTime.parse(s); // type="time"
+        else if (LocalDateTime.class.equals(c))
+            o = LocalDateTime.parse(s); // type="datetime-local"
+        else if (YearMonth.class.equals(c))
+            o = YearMonth.parse(s); // type="month"
 
         return o;
     }

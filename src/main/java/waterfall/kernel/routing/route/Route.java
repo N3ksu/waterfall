@@ -58,7 +58,7 @@ public class Route {
     }
 
     public static final class Builder {
-        public static Route build(RouteBlueprint routeBlueprint) {
+        public static Route build(Route.RouteBlueprint routeBlueprint) {
             Objects.requireNonNull(routeBlueprint.actionMethod(), "Cannot build a Route from an action method that is null");
             Objects.requireNonNull(routeBlueprint.uri(), "Cannot build a Route from a null URI");
             Objects.requireNonNull(routeBlueprint.httpMethod(), "Cannot build a Route from a null HTTP method");
@@ -77,10 +77,8 @@ public class Route {
             return new Route(routeBlueprint.httpMethod(), routeBlueprint.uri(), routeBlueprint.actionMethod(), mediaType, pattern, pathVariableKey);
         }
 
-        public record RouteBlueprint(Method actionMethod, String uri, HttpMethod httpMethod) {
-            public static RouteBlueprint of(Method actionMethod, String uri, HttpMethod httpMethod) {
-                return new RouteBlueprint(actionMethod, uri, httpMethod);
-            }
-        }
+    }
+
+    public record RouteBlueprint(Method actionMethod, String uri, HttpMethod httpMethod) {
     }
 }

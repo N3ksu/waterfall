@@ -1,11 +1,8 @@
 package waterfall.kernel.routing.router;
 
-import waterfall.api.annotation.request.mapping.RequestMapping;
 import waterfall.kernel.routing.http.method.HttpMethod;
 import waterfall.kernel.routing.route.Route;
-import waterfall.kernel.util.tuple.Pair;
 
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class Router {
@@ -30,10 +27,10 @@ public class Router {
     }
 
     public static final class Builder {
-        public static Router build(Set<Route.Builder.RouteBlueprint> routeBlueprints) {
+        public static Router build(Set<Route.RouteBlueprint> routeBlueprints) {
             Router router = new Router();
 
-            for (Route.Builder.RouteBlueprint routeBlueprint : routeBlueprints)
+            for (Route.RouteBlueprint routeBlueprint : routeBlueprints)
                 router.add(Route.Builder.build(routeBlueprint));
 
             return router;

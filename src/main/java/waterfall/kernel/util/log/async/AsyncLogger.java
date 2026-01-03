@@ -1,6 +1,5 @@
 package waterfall.kernel.util.log.async;
 
-import waterfall.kernel.util.log.Logger;
 import waterfall.kernel.util.log.entry.LogEntry;
 import waterfall.kernel.util.log.sync.SyncLogger;
 
@@ -10,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class AsyncLogger implements Logger {
+public final class AsyncLogger {
     private static final String LOG_WORKER_THREAD_NAME_PREFIX = "LOG-WORKER-THREAD";
     private static final AtomicInteger ID = new AtomicInteger();
 
@@ -45,24 +44,20 @@ public final class AsyncLogger implements Logger {
         }
     }
 
-    @Override
     public void log(LogEntry entry) {
         boolean added = queue.offer(entry);
         if (!added)
             syncLogger.warning("Log queue full, some messages are lost");
     }
 
-    @Override
     public void info(String message) {
         log(LogEntry.info(message));
     }
 
-    @Override
     public void warning(String message) {
         log(LogEntry.warning(message));
     }
 
-    @Override
     public void severe(String message) {
         log(LogEntry.severe(message));
     }

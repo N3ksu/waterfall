@@ -46,12 +46,12 @@ public final class BootStrap {
         Set<Pair<Method, RequestMapping>> methodAndRequestMappingSet =
                 IOReflectionUtil.findAnnotatedMethods(clientControllerPackage, Controller.class, RequestMapping.class);
 
-        Set<Route.Builder.RouteBlueprint> routeBlueprints = new HashSet<>();
+        Set<Route.RouteBlueprint> routeBlueprints = new HashSet<>();
 
         for (Pair<Method, RequestMapping> methodAndRequestMapping : methodAndRequestMappingSet) {
-            RequestMapping requestMapping = methodAndRequestMapping.getRight();
+            RequestMapping requestMapping = methodAndRequestMapping.right();
             for (HttpMethod httpMethod : requestMapping.method())
-                routeBlueprints.add(Route.Builder.RouteBlueprint.of(methodAndRequestMapping.getLeft(), requestMapping.value(), httpMethod));
+                routeBlueprints.add(new Route.RouteBlueprint(methodAndRequestMapping.left(), requestMapping.value(), httpMethod));
         }
 
         Router router = Router.Builder.build(routeBlueprints);

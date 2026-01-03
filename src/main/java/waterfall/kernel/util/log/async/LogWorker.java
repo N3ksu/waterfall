@@ -1,5 +1,6 @@
 package waterfall.kernel.util.log.async;
 
+import waterfall.kernel.util.log.Logger;
 import waterfall.kernel.util.log.entry.LogEntry;
 import waterfall.kernel.util.log.sync.SyncLogger;
 
@@ -15,7 +16,7 @@ public final class LogWorker implements Runnable {
 
     private volatile boolean running;
 
-    private final SyncLogger syncLogger;
+    private final Logger syncLogger;
 
     public LogWorker(BlockingQueue<LogEntry> queue, OutputStream out, Config config) {
         this.queue = queue;

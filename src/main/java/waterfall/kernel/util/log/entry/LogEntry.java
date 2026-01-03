@@ -9,19 +9,15 @@ public record LogEntry(LocalDateTime timestamp, Level level, String message) {
         this(LocalDateTime.now(), level, message);
     }
 
-    public static LogEntry of(Level level, String message) {
-        return new LogEntry(level, message);
-    }
-
     public static LogEntry info(String message) {
-        return LogEntry.of(Level.INFO, message);
+        return new LogEntry(Level.INFO, message);
     }
 
     public static LogEntry warning(String message) {
-        return LogEntry.of(Level.WARNING, message);
+        return new LogEntry(Level.WARNING, message);
     }
 
     public static LogEntry severe(String message) {
-        return LogEntry.of(Level.SEVERE, message);
+        return new LogEntry(Level.SEVERE, message);
     }
 }

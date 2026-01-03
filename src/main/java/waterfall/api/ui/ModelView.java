@@ -3,7 +3,7 @@ package waterfall.api.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModelView {
+public final class ModelView {
     private String view;
     private final Map<String, Object> attributes;
 
