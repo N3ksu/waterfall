@@ -15,7 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 public final class RouteArgumentResolver {
-    public static Object[] resolve(Route route, HttpServletRequest request) throws Exception {
+    private final RouteModelBinder routeModelBinder;
+
+    public RouteArgumentResolver() {
+        routeModelBinder = new RouteModelBinder();
+    }
+
+    public Object[] resolve(Route route, HttpServletRequest request) throws Exception {
         Parameter[] params = route.getAction().getParameters();
         Object[] args = new Object[params.length];
 
@@ -54,7 +60,7 @@ public final class RouteArgumentResolver {
                         Object model = ReflectionUtil.newInstanceFromNoArgsConstructor(param.getType());
 
                         for (String dotNotation : dotNotations)
-                            RouteModelBinder.bind(model, dotNotation.split("\\."), 1, request.getParameter(dotNotation));
+                            routeModelBinder.bind(model, dotNotation.split("\\."), 1, request.getParameter(dotNotation));
 
                         args[i] = model;
                         continue;

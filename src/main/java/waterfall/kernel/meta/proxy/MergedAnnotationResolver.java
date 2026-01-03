@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class MergedAnnotationResolver {
-    public static <T extends Annotation> T findAnnotation(AnnotatedElement annotatedElement, Class<T> annotationClass) {
+    public <T extends Annotation> T findAnnotation(AnnotatedElement annotatedElement, Class<T> annotationClass) {
         for (Annotation annotation : annotatedElement.getAnnotations()) {
             T merged = resolveHigherAnnotation(annotation, annotationClass);
 
@@ -23,7 +23,7 @@ public final class MergedAnnotationResolver {
         return null;
     }
 
-    public static <T extends Annotation> T resolveHigherAnnotation(Annotation lower, Class<T> higherClass) {
+    public <T extends Annotation> T resolveHigherAnnotation(Annotation lower, Class<T> higherClass) {
         Class<? extends Annotation> lowerClass = lower.annotationType();
 
         if (lowerClass.equals(higherClass))
@@ -47,7 +47,7 @@ public final class MergedAnnotationResolver {
         return resolveHigherAnnotation(merged, higherClass);
     }
 
-    private static <T extends Annotation> T mergeAnnotation(Class<T> higherClass, Annotation higher, Annotation lower) {
+    private <T extends Annotation> T mergeAnnotation(Class<T> higherClass, Annotation higher, Annotation lower) {
         Map<String, Object> mergedValues = new HashMap<>();
 
         for (Method method : higherClass.getDeclaredMethods()) {

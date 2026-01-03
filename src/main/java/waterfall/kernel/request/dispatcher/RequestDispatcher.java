@@ -13,9 +13,11 @@ import waterfall.kernel.response.endpoint.EndPoint;
 
 public final class RequestDispatcher {
     private final Router router;
+    private final RouteArgumentResolver routeArgumentResolver;
 
     public RequestDispatcher(Router router) {
         this.router = router;
+        routeArgumentResolver = new RouteArgumentResolver();
     }
 
     public void forward(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -26,13 +28,12 @@ public final class RequestDispatcher {
         }
 
         Object controller = ReflectionUtil.newInstanceFromNoArgsConstructor(route.getAction().getDeclaringClass());
-        Object[] args = RouteArgumentResolver.resolve(route, req);
+        Object[] args = routeArgumentResolver.resolve(route, req);
 
-        if (ModelView.class.equals(route.getAction().getReturnType())) {
+        if (ModelView.class.equals(route.getAction().getReturnType()))
             EndPoint.MV.forward(req, res, route, controller, args);
-        } else if (route.produces(MediaType.APPLICATION_JSON)) {
+        else if (route.produces(MediaType.APPLICATION_JSON))
             EndPoint.JSON.forward(req, res, route, controller, args);
-        }
     }
 
     private Route findRoute(HttpServletRequest req) {

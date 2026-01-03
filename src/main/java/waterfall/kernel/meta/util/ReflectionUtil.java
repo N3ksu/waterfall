@@ -1,6 +1,6 @@
 package waterfall.kernel.meta.util;
 
-import waterfall.kernel.exception.technical.meta.InstantiationNoArgsConstructorException;
+import waterfall.kernel.exception.technical.meta.NoArgsConstructorException;
 import waterfall.kernel.constant.Constant;
 import waterfall.kernel.meta.proxy.MergedAnnotationResolver;
 import waterfall.kernel.util.tuple.Pair;
@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class ReflectionUtil {
+    private static final MergedAnnotationResolver RESOLVER = new MergedAnnotationResolver();
+
     /**
      * If the setter wasn't defined this method return null
      */
@@ -51,7 +53,7 @@ public final class ReflectionUtil {
 
         T annotation;
         for (Method method : clazz.getDeclaredMethods())
-            if ((annotation = MergedAnnotationResolver.findAnnotation(method, annotationClass)) != null)
+            if ((annotation = RESOLVER.findAnnotation(method, annotationClass)) != null)
                 pairs.add(new Pair<>(method, annotation));
 
         return pairs;
@@ -65,7 +67,7 @@ public final class ReflectionUtil {
             Constructor<?> constructor = clazz.getDeclaredConstructor();
             return constructor.newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new InstantiationNoArgsConstructorException(clazz, e);
+            throw new NoArgsConstructorException(clazz, e);
         }
     }
 
