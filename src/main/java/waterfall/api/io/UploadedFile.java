@@ -2,9 +2,11 @@ package waterfall.api.io;
 
 import jakarta.servlet.http.Part;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +16,13 @@ import java.util.Map;
  */
 public record UploadedFile(Metadata metadata, InputStream stream) {
     public void write(String path) throws IOException {
-        try (FileOutputStream out = new FileOutputStream(path)) {
-            out.write(stream.readAllBytes());
-        }
+        Path target = Path.of(path);
+        Path parent = target.getParent();
+
+        if (parent != null)
+            Files.createDirectories(parent);
+
+        Files.copy(stream, target, StandardCopyOption.REPLACE_EXISTING);
     }
 
     public static UploadedFile of(Part part) throws IOException {
